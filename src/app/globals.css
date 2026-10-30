@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #14231f;
+
+  /* Brand — deep Nile teal (primary) */
+  --color-brand-50: #eef8f7;
+  --color-brand-100: #d3ece9;
+  --color-brand-200: #a7d9d4;
+  --color-brand-300: #7bc5bd;
+  --color-brand-400: #4ba79d;
+  --color-brand-500: #2c8b81;
+  --color-brand-600: #1f6f66;
+  --color-brand-700: #185650;
+  --color-brand-800: #123f3b;
+  --color-brand-900: #0b2b28;
+  --color-brand-950: #071d1a;
+
+  /* Accent — warm desert gold */
+  --color-gold-50: #fdf8ef;
+  --color-gold-100: #faedd2;
+  --color-gold-200: #f3d9a4;
+  --color-gold-300: #eabf70;
+  --color-gold-400: #dfa348;
+  --color-gold-500: #cb8a34;
+  --color-gold-600: #ab6e29;
+  --color-gold-700: #855423;
+  --color-gold-800: #5f3d1f;
+  --color-gold-900: #3d281a;
+
+  /* Sand — warm neutral for backgrounds */
+  --color-sand-50: #fbf9f5;
+  --color-sand-100: #f5f1e8;
+  --color-sand-200: #ece4d3;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
+  --color-brand-950: var(--color-brand-950);
+
+  --color-gold-50: var(--color-gold-50);
+  --color-gold-100: var(--color-gold-100);
+  --color-gold-200: var(--color-gold-200);
+  --color-gold-300: var(--color-gold-300);
+  --color-gold-400: var(--color-gold-400);
+  --color-gold-500: var(--color-gold-500);
+  --color-gold-600: var(--color-gold-600);
+  --color-gold-700: var(--color-gold-700);
+  --color-gold-800: var(--color-gold-800);
+  --color-gold-900: var(--color-gold-900);
+
+  --color-sand-50: var(--color-sand-50);
+  --color-sand-100: var(--color-sand-100);
+  --color-sand-200: var(--color-sand-200);
+
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-fraunces);
+
+  --container-8xl: 96rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
