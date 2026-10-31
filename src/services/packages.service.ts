@@ -31,7 +31,8 @@ function toPackage(p: PackageSummary | PackageDetail): TravelPackage {
     itinerary: "itinerary" in p ? toItinerary(p.itinerary) : [],
     included: "included" in p ? p.included : [],
     excluded: "excluded" in p ? p.excluded : [],
-    startingPrice: Number(p.startingPrice.amount),
+    pricingMode: p.pricingMode,
+    startingPrice: p.startingPrice ? Number(p.startingPrice.amount) : null,
     availableDates: [],
   };
 }

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function PackagePage({ params }: { params: Promise<{ locale: string; idOrSlug: string }> }) {
   const { locale, idOrSlug } = await params;
-  const pkg = await getPackageById(idOrSlug);
+  const [pkg, branding] = await Promise.all([getPackageById(idOrSlug), getBranding()]);
   if (!pkg) notFound();
 
   if (pkg.slug && idOrSlug !== pkg.slug) {
@@ -43,14 +43,14 @@ export default async function PackagePage({ params }: { params: Promise<{ locale
       description: pkg.overview || undefined,
       url: absoluteUrl(canonicalPath),
       image: pkg.image,
-      offer: pkg.startingPrice > 0 ? { priceAmount: pkg.startingPrice, priceCurrency: "EGP" } : undefined,
+      offer: pkg.startingPrice ? { priceAmount: pkg.startingPrice, priceCurrency: "EGP" } : undefined,
     }),
   ];
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <PackageDetail pkg={pkg} />
+      <PackageDetail pkg={pkg} whatsappNumber={branding.contactWhatsappNumber} />
     </>
   );
 }

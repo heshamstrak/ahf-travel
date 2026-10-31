@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function TourPage({ params }: { params: Promise<{ locale: string; idOrSlug: string }> }) {
   const { locale, idOrSlug } = await params;
-  const tour = await getTourById(idOrSlug);
+  const [tour, branding] = await Promise.all([getTourById(idOrSlug), getBranding()]);
   if (!tour) notFound();
 
   // Canonicalize onto the slug: old links by raw id keep working, but never get indexed twice.
@@ -44,14 +44,14 @@ export default async function TourPage({ params }: { params: Promise<{ locale: s
       description: tour.overview || undefined,
       url: absoluteUrl(canonicalPath),
       image: tour.image,
-      offer: tour.startingPrice > 0 ? { priceAmount: tour.startingPrice, priceCurrency: "EGP" } : undefined,
+      offer: tour.startingPrice ? { priceAmount: tour.startingPrice, priceCurrency: "EGP" } : undefined,
     }),
   ];
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <TourDetail tour={tour} />
+      <TourDetail tour={tour} whatsappNumber={branding.contactWhatsappNumber} />
     </>
   );
 }

@@ -71,7 +71,9 @@ export interface Tour {
   reviewCount: number;
   languages: string[];
   maxGroupSize: number;
-  startingPrice: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
   overview: string;
   highlights: string[];
   itinerary: ItineraryItem[];
@@ -99,7 +101,9 @@ export interface Car {
   doors: number;
   transmission: CarTransmission;
   airConditioning: boolean;
-  pricePerDay: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  pricePerDay: number | null;
   mileageIncluded: string;
   fuelPolicy: string;
   depositEGP: number;
@@ -145,7 +149,9 @@ export interface TravelPackage {
   itinerary: PackageDay[];
   included: string[];
   excluded: string[];
-  startingPrice: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
   availableDates: string[];
 }
 

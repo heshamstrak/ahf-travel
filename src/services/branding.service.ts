@@ -48,6 +48,8 @@ export interface Branding {
   hero: BrandingHero;
   logoUrl: string | null;
   faviconUrl: string | null;
+  /** The admin-configured WhatsApp number for the Contact-for-Price CTA, or null if unset. */
+  contactWhatsappNumber: string | null;
 }
 
 /** Defaults are the current, hand-built AHF Travel look — exactly what renders when an
@@ -59,6 +61,7 @@ export const DEFAULT_BRANDING: Branding = {
   hero: {},
   logoUrl: null,
   faviconUrl: null,
+  contactWhatsappNumber: null,
 };
 
 /** Deliberately NOT `serverGet` (which forces `cache: "no-store"`): this is fetched from the root

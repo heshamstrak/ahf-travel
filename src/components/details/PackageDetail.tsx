@@ -14,16 +14,19 @@ import Button from "@/components/ui/Button";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import EstimateCard from "@/components/booking/EstimateCard";
+import ContactForPriceCta from "@/components/product/ContactForPriceCta";
 
-export default function PackageDetail({ pkg }: { pkg: TravelPackage }) {
+export default function PackageDetail({ pkg, whatsappNumber }: { pkg: TravelPackage; whatsappNumber: string | null }) {
   const router = useRouter();
   const [guests, setGuests] = useState(2);
   const [departures, setDepartures] = useState<DepartureOffer[]>([]);
   const [departureId, setDepartureId] = useState<string | null>(null);
-  const [loadingDepartures, setLoadingDepartures] = useState(true);
+  const bookable = pkg.pricingMode === "FIXED_PRICE";
+  const [loadingDepartures, setLoadingDepartures] = useState(bookable);
   const [departuresError, setDeparturesError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!bookable) return;
     let cancelled = false;
     Promise.resolve()
       .then(() => {
@@ -47,10 +50,10 @@ export default function PackageDetail({ pkg }: { pkg: TravelPackage }) {
     return () => {
       cancelled = true;
     };
-  }, [pkg.id, guests]);
+  }, [pkg.id, guests, bookable]);
 
   const selectedDeparture = useMemo(() => departures.find((d) => d.id === departureId) ?? null, [departures, departureId]);
-  const perTraveller = selectedDeparture?.priceOverride ? Number(selectedDeparture.priceOverride.amount) : pkg.startingPrice;
+  const perTraveller = selectedDeparture?.priceOverride ? Number(selectedDeparture.priceOverride.amount) : pkg.startingPrice ?? 0;
   const estimateEGP = perTraveller * guests;
 
   const book = () => {
@@ -156,7 +159,9 @@ export default function PackageDetail({ pkg }: { pkg: TravelPackage }) {
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-          {loadingDepartures ? (
+          {!bookable ? (
+            <ContactForPriceCta productName={pkg.title} productType="package" productId={pkg.id} whatsappNumber={whatsappNumber} />
+          ) : loadingDepartures ? (
             <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
               <h2 className="font-display text-lg font-medium text-slate-900">Plan your trip</h2>
               <p className="mt-3 text-sm text-slate-500">Loading available departures…</p>

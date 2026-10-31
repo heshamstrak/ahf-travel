@@ -61,13 +61,19 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
           <div>
-            <p className="text-xs text-slate-500">{t("card.perDay")}</p>
-            <PriceDisplay amountEGP={car.pricePerDay} className="font-display text-lg font-semibold text-slate-900" />
-            {days ? (
-              <p className="mt-0.5 text-xs text-slate-500">
-                {t("card.totalForDays", { days })} <PriceDisplay amountEGP={car.pricePerDay * days} className="font-semibold text-slate-700" />
-              </p>
-            ) : null}
+            {car.pricingMode === "FIXED_PRICE" && car.pricePerDay !== null ? (
+              <>
+                <p className="text-xs text-slate-500">{t("card.perDay")}</p>
+                <PriceDisplay amountEGP={car.pricePerDay} className="font-display text-lg font-semibold text-slate-900" />
+                {days ? (
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    {t("card.totalForDays", { days })} <PriceDisplay amountEGP={car.pricePerDay * days} className="font-semibold text-slate-700" />
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <p className="font-display text-sm font-medium text-slate-500">{t("card.priceOnRequest")}</p>
+            )}
           </div>
           <Link
             href={`/cars/${car.slug || car.id}`}

@@ -52,8 +52,14 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
           <div>
-            <p className="text-xs text-slate-500">{t("card.startingFrom")}</p>
-            <PriceDisplay amountEGP={tour.startingPrice} suffix={t("card.perPerson")} className="font-display text-lg font-semibold text-slate-900" />
+            {tour.pricingMode === "FIXED_PRICE" && tour.startingPrice !== null ? (
+              <>
+                <p className="text-xs text-slate-500">{t("card.startingFrom")}</p>
+                <PriceDisplay amountEGP={tour.startingPrice} suffix={t("card.perPerson")} className="font-display text-lg font-semibold text-slate-900" />
+              </>
+            ) : (
+              <p className="font-display text-sm font-medium text-slate-500">{t("card.priceOnRequest")}</p>
+            )}
           </div>
           <Link
             href={`/tours/${tour.slug || tour.id}`}

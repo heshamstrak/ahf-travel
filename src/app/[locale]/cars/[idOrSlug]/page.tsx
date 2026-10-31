@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function CarPage({ params }: { params: Promise<{ locale: string; idOrSlug: string }> }) {
   const { locale, idOrSlug } = await params;
-  const [car, locations] = await Promise.all([getCarById(idOrSlug), getLocations({ type: "CAR_BRANCH" })]);
+  const [car, locations, branding] = await Promise.all([getCarById(idOrSlug), getLocations({ type: "CAR_BRANCH" }), getBranding()]);
   if (!car) notFound();
 
   if (car.slug && idOrSlug !== car.slug) {
@@ -42,14 +42,14 @@ export default async function CarPage({ params }: { params: Promise<{ locale: st
       name: `${car.brand} ${car.name}`,
       url: absoluteUrl(canonicalPath),
       image: car.image,
-      offer: car.pricePerDay > 0 ? { priceAmount: car.pricePerDay, priceCurrency: "EGP" } : undefined,
+      offer: car.pricePerDay ? { priceAmount: car.pricePerDay, priceCurrency: "EGP" } : undefined,
     }),
   ];
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <CarDetail car={car} locations={locations} />
+      <CarDetail car={car} locations={locations} whatsappNumber={branding.contactWhatsappNumber} />
     </>
   );
 }
