@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { CalendarCheck, CalendarClock, Car, Hotel, Map, Package, PauseCircle, TimerOff, Wallet, Bus, XCircle } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { Card, ErrorState, LoadingState, PageHeader, StatusBadge } from "@/components/admin/ui";
 import { BarLineChart, DonutBreakdown } from "@/components/admin/Charts";
+import KpiCard from "@/components/admin/KpiCard";
 
 interface DashboardData {
   bookings: { total: number; confirmed: number; pending: number; cancelled: number; expired: number; today: number };
@@ -38,15 +40,6 @@ function rangeFor(key: RangeKey, customFrom: string, customTo: string): { from: 
 function shortDate(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
-}
-
-function Stat({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <Card className="p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-slate-900">{value}</p>
-    </Card>
-  );
 }
 
 export default function AdminDashboardPage() {
@@ -86,44 +79,38 @@ export default function AdminDashboardPage() {
       <PageHeader title="Dashboard" description="Live figures straight from the database." />
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <Stat label="Total bookings" value={data.bookings.total} />
-        <Stat label="Today" value={data.bookings.today} />
-        <Stat label="Confirmed" value={data.bookings.confirmed} />
-        <Stat label="Pending" value={data.bookings.pending} />
-        <Stat label="Cancelled" value={data.bookings.cancelled} />
-        <Stat label="Expired" value={data.bookings.expired} />
+        <KpiCard label="Total bookings" value={data.bookings.total} icon={CalendarCheck} />
+        <KpiCard label="Today" value={data.bookings.today} icon={CalendarClock} />
+        <KpiCard label="Confirmed" value={data.bookings.confirmed} icon={CalendarCheck} />
+        <KpiCard label="Pending" value={data.bookings.pending} icon={PauseCircle} />
+        <KpiCard label="Cancelled" value={data.bookings.cancelled} icon={XCircle} />
+        <KpiCard label="Expired" value={data.bookings.expired} icon={TimerOff} />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <Stat label="Hotels" value={data.catalogue.hotels} />
-        <Stat label="Tours" value={data.catalogue.tours} />
-        <Stat label="Cars" value={data.catalogue.cars} />
-        <Stat label="Transfer routes" value={data.catalogue.transfers} />
-        <Stat label="Packages" value={data.catalogue.packages} />
+        <KpiCard label="Hotels" value={data.catalogue.hotels} icon={Hotel} />
+        <KpiCard label="Tours" value={data.catalogue.tours} icon={Map} />
+        <KpiCard label="Cars" value={data.catalogue.cars} icon={Car} />
+        <KpiCard label="Transfer routes" value={data.catalogue.transfers} icon={Bus} />
+        <KpiCard label="Packages" value={data.catalogue.packages} icon={Package} />
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
-        <Card className="p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Confirmed booking value</p>
-          <p className="mt-2 text-xl font-semibold text-slate-900">
-            {data.financials.confirmedBookingValue} {data.financials.currency}
-          </p>
-          <p className="mt-1 text-xs text-slate-400">Value of confirmed bookings — not necessarily collected yet.</p>
-        </Card>
-        <Card className="p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Revenue actually collected</p>
-          <p className="mt-2 text-xl font-semibold text-emerald-700">
-            {data.financials.collectedRevenue} {data.financials.currency}
-          </p>
-          <p className="mt-1 text-xs text-slate-400">InstaPay approved + cash recorded as collected.</p>
-        </Card>
-        <Card className="p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Outstanding cash</p>
-          <p className="mt-2 text-xl font-semibold text-amber-700">
-            {data.payments.outstandingCashCollections.amount} {data.financials.currency}
-          </p>
-          <p className="mt-1 text-xs text-slate-400">{data.payments.outstandingCashCollections.count} confirmed cash booking(s) awaiting collection.</p>
-        </Card>
+        <KpiCard
+          label="Confirmed booking value"
+          value={`${data.financials.confirmedBookingValue} ${data.financials.currency}`}
+          icon={Wallet}
+        />
+        <KpiCard
+          label="Revenue actually collected"
+          value={`${data.financials.collectedRevenue} ${data.financials.currency}`}
+          icon={Wallet}
+        />
+        <KpiCard
+          label={`Outstanding cash (${data.payments.outstandingCashCollections.count} booking${data.payments.outstandingCashCollections.count === 1 ? "" : "s"})`}
+          value={`${data.payments.outstandingCashCollections.amount} ${data.financials.currency}`}
+          icon={Wallet}
+        />
       </div>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3">

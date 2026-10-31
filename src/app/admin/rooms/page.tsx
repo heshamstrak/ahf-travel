@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { BadgeCheck, EyeOff, Pencil, X } from "lucide-react";
 import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, PageHeader, PrimaryButton, SecondaryButton, StatusBadge, TagListInput } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
 import ImageManager from "@/components/admin/ImageManager";
+import RowActions from "@/components/admin/RowActions";
 
 interface HotelOption {
   id: string;
@@ -140,19 +141,17 @@ export default function AdminRoomsIndexPage() {
     { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (r) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {r.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(r, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(r, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={[
+            { key: "edit", label: "Edit", icon: Pencil, onClick: () => setEditing(r) },
+            r.status !== "PUBLISHED"
+              ? { key: "publish", label: "Publish", icon: BadgeCheck, onClick: () => setStatus(r, "PUBLISHED") }
+              : { key: "unpublish", label: "Unpublish", icon: EyeOff, onClick: () => setStatus(r, "DRAFT") },
+          ]}
+        />
       ),
     },
   ];

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AdminAuthProvider, useAdminAuth } from "@/lib/admin/auth";
 import { AdminToastProvider } from "@/lib/admin/toast";
+import { AdminI18nProvider } from "@/lib/admin/i18n";
 import AdminShell from "@/components/admin/AdminShell";
 import { LoadingState } from "@/components/admin/ui";
 
@@ -32,10 +33,12 @@ function Gate({ children }: { children: React.ReactNode }) {
 
 export default function AdminGate({ children }: { children: React.ReactNode }) {
   return (
-    <AdminAuthProvider>
-      <AdminToastProvider>
-        <Gate>{children}</Gate>
-      </AdminToastProvider>
-    </AdminAuthProvider>
+    <AdminI18nProvider>
+      <AdminAuthProvider>
+        <AdminToastProvider>
+          <Gate>{children}</Gate>
+        </AdminToastProvider>
+      </AdminAuthProvider>
+    </AdminI18nProvider>
   );
 }

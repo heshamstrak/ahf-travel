@@ -6,6 +6,9 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
+import { catalogRowActions } from "@/components/admin/catalogActions";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 interface Policy {
   id: string;
@@ -44,6 +47,7 @@ const emptyForm = {
 
 export default function AdminCarsPage() {
   const { notify } = useAdminToast();
+  const { t } = useAdminI18n();
   const router = useRouter();
   const [items, setItems] = useState<CarModel[] | null>(null);
   const [policies, setPolicies] = useState<Policy[]>([]);
@@ -111,19 +115,18 @@ export default function AdminCarsPage() {
     { key: "status", header: "Status", render: (c) => <StatusBadge status={c.status} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (c) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {c.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(c.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(c.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={catalogRowActions({
+            status: c.status,
+            entityLabel: "car model",
+            detailHref: () => router.push(`/admin/cars/${c.id}`),
+            onSetStatus: (status) => setStatus(c.id, status),
+            t,
+          })}
+        />
       ),
     },
   ];

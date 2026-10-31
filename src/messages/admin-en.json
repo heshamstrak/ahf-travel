@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "hotels": "Hotels",
+    "rooms": "Hotel Rooms",
+    "tours": "Tours",
+    "tourSessions": "Tour Sessions",
+    "cars": "Cars",
+    "transfers": "Transfers",
+    "packages": "Packages",
+    "destinations": "Destinations",
+    "locations": "Locations",
+    "policies": "Policies",
+    "bookings": "Bookings",
+    "payments": "Payments",
+    "pricingRules": "Pricing & Fees",
+    "branding": "Branding",
+    "settings": "Settings",
+    "conferencesEvents": "Conferences & Events",
+    "inquiries": "Customer Inquiries",
+    "customers": "Customers"
+  },
+  "shell": {
+    "breadcrumbDashboard": "Dashboard",
+    "breadcrumbDetails": "Details",
+    "quickSearchPlaceholder": "Find a booking by reference…",
+    "signOut": "Sign out",
+    "collapseSidebar": "Collapse",
+    "expandSidebar": "Expand sidebar",
+    "openMenu": "Open menu",
+    "direction": "Direction",
+    "ltr": "LTR",
+    "rtl": "RTL"
+  },
+  "common": {
+    "loading": "Loading…",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {page} of {totalPages}",
+    "cancel": "Cancel",
+    "working": "Working…"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "archive": "Archive",
+    "delete": "Delete",
+    "archiveConfirmTitle": "Archive this {entity}?",
+    "archiveConfirmMessage": "Archived {entity}s are hidden from the public site. You can unpublish or re-publish it later from its detail page.",
+    "deleteConfirmTitle": "Delete this {entity}?",
+    "deleteConfirmMessage": "This permanently removes it and cannot be undone."
+  }
+}

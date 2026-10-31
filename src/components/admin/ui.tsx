@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AlertTriangle, Loader2, Inbox, Plus, X } from "lucide-react";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 export function Badge({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "success" | "warning" | "danger" | "info" }) {
   const tones: Record<string, string> = {
@@ -39,11 +40,12 @@ export function StatusBadge({ status }: { status: string }) {
   return <Badge tone={STATUS_TONE[status] ?? "neutral"}>{status.replace(/_/g, " ")}</Badge>;
 }
 
-export function LoadingState({ label = "Loading…" }: { label?: string }) {
+export function LoadingState({ label }: { label?: string }) {
+  const { t } = useAdminI18n();
   return (
     <div className="flex items-center justify-center gap-2 py-16 text-slate-500">
       <Loader2 size={18} className="animate-spin" />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm">{label ?? t("common.loading")}</span>
     </div>
   );
 }
@@ -68,17 +70,16 @@ export function ErrorState({ message }: { message: string }) {
 }
 
 export function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (page: number) => void }) {
+  const { t } = useAdminI18n();
   if (totalPages <= 1) return null;
   return (
     <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3">
       <button disabled={page <= 1} onClick={() => onChange(page - 1)} className="rounded-md border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40">
-        Previous
+        {t("common.previous")}
       </button>
-      <span className="text-sm text-slate-500">
-        Page {page} of {totalPages}
-      </span>
+      <span className="text-sm text-slate-500">{t("common.pageOf", { page, totalPages })}</span>
       <button disabled={page >= totalPages} onClick={() => onChange(page + 1)} className="rounded-md border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-40">
-        Next
+        {t("common.next")}
       </button>
     </div>
   );

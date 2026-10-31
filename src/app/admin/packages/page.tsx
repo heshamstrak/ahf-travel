@@ -6,6 +6,9 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
+import { catalogRowActions } from "@/components/admin/catalogActions";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 interface Destination {
   id: string;
@@ -47,6 +50,7 @@ const emptyForm = {
 
 export default function AdminPackagesPage() {
   const { notify } = useAdminToast();
+  const { t } = useAdminI18n();
   const router = useRouter();
   const [items, setItems] = useState<Pkg[] | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
@@ -117,19 +121,18 @@ export default function AdminPackagesPage() {
     { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (p) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {p.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(p.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(p.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={catalogRowActions({
+            status: p.status,
+            entityLabel: "package",
+            detailHref: () => router.push(`/admin/packages/${p.id}`),
+            onSetStatus: (status) => setStatus(p.id, status),
+            t,
+          })}
+        />
       ),
     },
   ];

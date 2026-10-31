@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, SecondaryButton } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
 
 interface Rule {
   hoursBeforeStart: number;
@@ -143,6 +144,12 @@ export default function AdminPoliciesPage() {
       key: "rules",
       header: "Refund rules",
       render: (p) => <span className="text-xs text-slate-500">{p.rules.map((r) => `${r.refundPercent}% @ ${r.hoursBeforeStart}h+`).join(" · ")}</span>,
+    },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      render: (p) => <RowActions actions={[{ key: "edit", label: "Edit", icon: Pencil, onClick: () => setEditing(p) }]} />,
     },
   ];
 

@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "hotels": "الفنادق",
+    "rooms": "غرف الفنادق",
+    "tours": "الجولات",
+    "tourSessions": "جلسات الجولات",
+    "cars": "السيارات",
+    "transfers": "النقل",
+    "packages": "الباقات",
+    "destinations": "الوجهات",
+    "locations": "المواقع",
+    "policies": "السياسات",
+    "bookings": "الحجوزات",
+    "payments": "المدفوعات",
+    "pricingRules": "التسعير والرسوم",
+    "branding": "الهوية البصرية",
+    "settings": "الإعدادات",
+    "conferencesEvents": "المؤتمرات والفعاليات",
+    "inquiries": "استفسارات العملاء",
+    "customers": "العملاء"
+  },
+  "shell": {
+    "breadcrumbDashboard": "لوحة التحكم",
+    "breadcrumbDetails": "التفاصيل",
+    "quickSearchPlaceholder": "البحث عن حجز برقم المرجع…",
+    "signOut": "تسجيل الخروج",
+    "collapseSidebar": "طي القائمة",
+    "expandSidebar": "توسيع القائمة",
+    "openMenu": "فتح القائمة",
+    "direction": "اتجاه الصفحة",
+    "ltr": "LTR",
+    "rtl": "RTL"
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "previous": "السابق",
+    "next": "التالي",
+    "pageOf": "صفحة {page} من {totalPages}",
+    "cancel": "إلغاء",
+    "working": "جارٍ التنفيذ…"
+  },
+  "actions": {
+    "view": "عرض",
+    "edit": "تعديل",
+    "publish": "نشر",
+    "unpublish": "إلغاء النشر",
+    "archive": "أرشفة",
+    "delete": "حذف",
+    "archiveConfirmTitle": "أرشفة هذا العنصر؟",
+    "archiveConfirmMessage": "العناصر المؤرشفة تختفي من الموقع العام. يمكنك إلغاء النشر أو إعادة النشر لاحقًا من صفحة التفاصيل.",
+    "deleteConfirmTitle": "حذف هذا العنصر؟",
+    "deleteConfirmMessage": "سيتم حذفه بشكل نهائي ولا يمكن التراجع عن هذا الإجراء."
+  }
+}

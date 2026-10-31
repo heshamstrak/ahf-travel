@@ -6,6 +6,9 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
+import { catalogRowActions } from "@/components/admin/catalogActions";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 interface Destination {
   id: string;
@@ -38,6 +41,7 @@ const emptyForm = {
 
 export default function AdminHotelsPage() {
   const { notify } = useAdminToast();
+  const { t } = useAdminI18n();
   const router = useRouter();
   const [items, setItems] = useState<Hotel[] | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
@@ -97,19 +101,18 @@ export default function AdminHotelsPage() {
     { key: "updatedAt", header: "Updated", sortValue: (h) => h.updatedAt, render: (h) => new Date(h.updatedAt).toLocaleDateString() },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (h) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {h.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(h.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(h.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={catalogRowActions({
+            status: h.status,
+            entityLabel: "hotel",
+            detailHref: () => router.push(`/admin/hotels/${h.id}`),
+            onSetStatus: (status) => setStatus(h.id, status),
+            t,
+          })}
+        />
       ),
     },
   ];

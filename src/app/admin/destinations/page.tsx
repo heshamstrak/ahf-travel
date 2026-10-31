@@ -6,6 +6,9 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
+import { catalogRowActions } from "@/components/admin/catalogActions";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 interface Destination {
   id: string;
@@ -22,6 +25,7 @@ const emptyForm = { slug: "", name: "", countryCode: "EG", description: "" };
 
 export default function AdminDestinationsPage() {
   const { notify } = useAdminToast();
+  const { t } = useAdminI18n();
   const router = useRouter();
   const [items, setItems] = useState<Destination[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -71,19 +75,18 @@ export default function AdminDestinationsPage() {
     { key: "status", header: "Status", render: (d) => <StatusBadge status={d.status} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (d) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {d.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(d.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(d.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={catalogRowActions({
+            status: d.status,
+            entityLabel: "destination",
+            detailHref: () => router.push(`/admin/destinations/${d.id}`),
+            onSetStatus: (status) => setStatus(d.id, status),
+            t,
+          })}
+        />
       ),
     },
   ];

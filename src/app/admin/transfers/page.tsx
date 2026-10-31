@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BadgeCheck, EyeOff } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
-import { Badge, Card, EmptyState, ErrorState, Field, inputClass, LoadingState, PageHeader, PrimaryButton, SecondaryButton, TagListInput } from "@/components/admin/ui";
+import { Badge, Card, ErrorState, Field, inputClass, LoadingState, PageHeader, PrimaryButton, SecondaryButton, StatusBadge, TagListInput } from "@/components/admin/ui";
 import ImageManager from "@/components/admin/ImageManager";
+import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
 
 interface VehicleClass {
   id: string;
@@ -284,6 +287,37 @@ export default function AdminTransfersPage() {
     }
   }
 
+  const rateColumns: DataTableColumn<TransferRate>[] = [
+    {
+      key: "route",
+      header: "Route",
+      sortValue: (r) => `${r.origin.name} ${r.destination.name}`,
+      render: (r) => (
+        <span className="font-medium text-slate-800">
+          {r.origin.name} → {r.destination.name}
+        </span>
+      ),
+    },
+    { key: "vehicle", header: "Vehicle class", sortValue: (r) => r.vehicleClass.name, render: (r) => r.vehicleClass.name },
+    { key: "amount", header: "Amount", sortValue: (r) => Number(r.amount), render: (r) => `${r.amount} ${r.currency}${r.isDevPlaceholder ? " (dev placeholder)" : ""}` },
+    { key: "duration", header: "Duration", sortValue: (r) => r.durationMinutes, render: (r) => `${r.durationMinutes} min` },
+    { key: "status", header: "Status", render: (r) => <StatusBadge status={r.isActive ? "PUBLISHED" : "DRAFT"} /> },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      render: (r) => (
+        <RowActions
+          actions={[
+            r.isActive
+              ? { key: "deactivate", label: "Deactivate", icon: EyeOff, onClick: () => toggleActive(r.id, r.isActive) }
+              : { key: "activate", label: "Activate", icon: BadgeCheck, onClick: () => toggleActive(r.id, r.isActive) },
+          ]}
+        />
+      ),
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <PageHeader title="Transfers" description="Vehicle classes, routes and rates." />
@@ -384,29 +418,15 @@ export default function AdminTransfersPage() {
         )}
 
         {error && <ErrorState message={error} />}
-        {!error && !rates && <LoadingState />}
-        {!error && rates && (
-          <>
-            {rates.length === 0 ? (
-              <EmptyState title="No transfer rates yet" />
-            ) : (
-              <div className="divide-y divide-slate-100">
-                {rates.map((r) => (
-                  <div key={r.id} className="flex items-center justify-between px-1 py-3 text-sm">
-                    <div>
-                      <p className="font-medium text-slate-800">
-                        {r.origin.name} → {r.destination.name} ({r.vehicleClass.name})
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {r.amount} {r.currency} · {r.durationMinutes} min {r.isDevPlaceholder && "· dev placeholder price"}
-                      </p>
-                    </div>
-                    <SecondaryButton onClick={() => toggleActive(r.id, r.isActive)}>{r.isActive ? "Deactivate" : "Activate"}</SecondaryButton>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+        {!error && (
+          <DataTable
+            columns={rateColumns}
+            rows={rates}
+            rowKey={(r) => r.id}
+            searchableText={(r) => `${r.origin.name} ${r.destination.name} ${r.vehicleClass.name}`}
+            searchPlaceholder="Search routes…"
+            emptyTitle="No transfer rates yet"
+          />
         )}
       </Card>
     </div>
