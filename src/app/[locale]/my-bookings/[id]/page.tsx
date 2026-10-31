@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import BookingDetailPage from "@/components/booking/BookingDetailPage";
 
-export const metadata: Metadata = { title: "Booking details" };
+export const metadata: Metadata = { title: "Booking details", robots: { index: false, follow: false } };
 
 export default async function MyBookingDetailPage({
   params,

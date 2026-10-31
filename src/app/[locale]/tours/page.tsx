@@ -5,8 +5,17 @@ import ToursListing from "@/components/listing/ToursListing";
 import { ListingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { getTours } from "@/services/tours.service";
 import { getDestinations } from "@/services/destinations.service";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Tours & Activities" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/tours",
+    title: "Tours & Activities in Egypt",
+    description: "Book Egypt tours and excursions, including Grand Egyptian Museum and Pyramids of Giza tours, Nile cruises and day trips, led by licensed local guides.",
+  });
+}
 
 export default async function ToursPage() {
   const [tours, destinations] = await Promise.all([getTours(), getDestinations()]);

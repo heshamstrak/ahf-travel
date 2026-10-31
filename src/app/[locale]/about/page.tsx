@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import ContentPage from "@/components/content/ContentPage";
 import Button from "@/components/ui/Button";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "About Us" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/about", title: "About Us", description: "AHF Travel brings hotels, tours, cars, transfers and packages together so you can book your Egypt trip with confidence." });
+}
 
 export default function AboutPage() {
   return (

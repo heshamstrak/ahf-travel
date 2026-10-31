@@ -9,7 +9,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Link href={`/hotels/${hotel.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/hotels/${hotel.slug || hotel.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={hotel.image}
             alt=""
@@ -29,7 +29,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         </div>
 
         <h3 className="mt-2 line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/hotels/${hotel.id}`} className="hover:text-brand-700">
+          <Link href={`/hotels/${hotel.slug || hotel.id}`} className="hover:text-brand-700">
             {hotel.name}
           </Link>
         </h3>
@@ -71,7 +71,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
         </div>
 
         <Link
-          href={`/hotels/${hotel.id}`}
+          href={`/hotels/${hotel.slug || hotel.id}`}
           className="mt-3 inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
         >
           View Details

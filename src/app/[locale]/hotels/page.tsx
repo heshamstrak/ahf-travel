@@ -5,8 +5,17 @@ import HotelsListing from "@/components/listing/HotelsListing";
 import { ListingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { getHotels } from "@/services/hotels.service";
 import { getDestinations } from "@/services/destinations.service";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Hotels in Egypt" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/hotels",
+    title: "Hotels in Egypt",
+    description: "Compare and book hotels across Cairo, Giza, Luxor, Aswan, Hurghada and Sharm El Sheikh, with transparent prices and flexible cancellation.",
+  });
+}
 
 export default async function HotelsPage() {
   const [hotels, destinations] = await Promise.all([getHotels(), getDestinations()]);

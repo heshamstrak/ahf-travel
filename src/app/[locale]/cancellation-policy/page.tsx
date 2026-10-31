@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import ContentPage from "@/components/content/ContentPage";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Cancellation Policy" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/cancellation-policy", title: "Cancellation Policy", description: "Cancellation and refund terms for hotel, tour, car rental, transfer and package bookings made through AHF Travel." });
+}
 
 export default function CancellationPolicyPage() {
   return (

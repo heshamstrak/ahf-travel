@@ -12,6 +12,7 @@ function toCar(c: CarSummary | CarDetail): Car {
   const images = "images" in c ? c.images.map((i) => i.url) : c.image ? [c.image.url] : [];
   return {
     id: c.id,
+    slug: c.slug,
     name: c.name,
     brand: c.brand,
     category: c.category,

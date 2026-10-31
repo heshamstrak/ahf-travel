@@ -9,7 +9,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Link href={`/tours/${tour.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/tours/${tour.slug || tour.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={tour.image}
             alt=""
@@ -26,7 +26,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/tours/${tour.id}`} className="hover:text-brand-700">
+          <Link href={`/tours/${tour.slug || tour.id}`} className="hover:text-brand-700">
             {tour.title}
           </Link>
         </h3>
@@ -54,7 +54,7 @@ export default function TourCard({ tour }: { tour: Tour }) {
             <PriceDisplay amountEGP={tour.startingPrice} suffix="/ person" className="font-display text-lg font-semibold text-slate-900" />
           </div>
           <Link
-            href={`/tours/${tour.id}`}
+            href={`/tours/${tour.slug || tour.id}`}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
             View Details

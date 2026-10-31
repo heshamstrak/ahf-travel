@@ -9,7 +9,7 @@ export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Link href={`/packages/${pkg.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/packages/${pkg.slug || pkg.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={pkg.image}
             alt=""
@@ -29,7 +29,7 @@ export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/packages/${pkg.id}`} className="hover:text-brand-700">
+          <Link href={`/packages/${pkg.slug || pkg.id}`} className="hover:text-brand-700">
             {pkg.title}
           </Link>
         </h3>
@@ -60,7 +60,7 @@ export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
             <PriceDisplay amountEGP={pkg.startingPrice} className="font-display text-lg font-semibold text-slate-900" />
           </div>
           <Link
-            href={`/packages/${pkg.id}`}
+            href={`/packages/${pkg.slug || pkg.id}`}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
             View

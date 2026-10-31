@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import BookingSuccess from "@/components/booking/BookingSuccess";
 
-export const metadata: Metadata = { title: "Booking confirmed" };
+export const metadata: Metadata = { title: "Booking confirmed", robots: { index: false, follow: false } };
 
 export default function BookingSuccessPage() {
   return (

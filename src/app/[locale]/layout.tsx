@@ -8,6 +8,7 @@ import { AppProvider } from "@/context/AppProvider";
 import { getBranding } from "@/services/branding.service";
 import { routing } from "@/i18n/routing";
 import { jakarta, fraunces } from "@/lib/fonts";
+import { organizationJsonLd } from "@/lib/seo/jsonld";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -58,11 +59,14 @@ export default async function LocaleLayout({
   if (theme.footerBackgroundColor) overrides.push(`--site-footer-bg: ${theme.footerBackgroundColor};`);
   if (theme.footerTextColor) overrides.push(`--site-footer-text: ${theme.footerTextColor};`);
   const overrideCss = overrides.length > 0 ? `:root { ${overrides.join(" ")} }` : null;
+  const siteName = branding.identity.siteName || DEFAULT_SITE_NAME;
+  const orgJsonLd = organizationJsonLd(siteName, branding.logoUrl);
 
   return (
     <html lang={locale} dir={dir} className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}>
       <head>{overrideCss ? <style dangerouslySetInnerHTML={{ __html: overrideCss }} /> : null}</head>
       <body className="flex min-h-full flex-col overflow-x-hidden bg-white text-slate-900">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <NextIntlClientProvider locale={locale}>
           <AppProvider>
             <Navbar branding={branding} />

@@ -9,7 +9,7 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden bg-sand-50">
-        <Link href={`/cars/${car.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/cars/${car.slug || car.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={car.image}
             alt=""
@@ -26,7 +26,7 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/cars/${car.id}`} className="hover:text-brand-700">
+          <Link href={`/cars/${car.slug || car.id}`} className="hover:text-brand-700">
             {car.name}
           </Link>
         </h3>
@@ -68,7 +68,7 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
             ) : null}
           </div>
           <Link
-            href={`/cars/${car.id}`}
+            href={`/cars/${car.slug || car.id}`}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
             View Details

@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import ContactView from "@/components/content/ContactView";
 import PageHeader from "@/components/ui/PageHeader";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Contact Us" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/contact", title: "Contact Us", description: "Get in touch with AHF Travel for help with an existing booking or questions before you book." });
+}
 
 export default function ContactPage() {
   return (

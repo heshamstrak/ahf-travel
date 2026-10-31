@@ -15,6 +15,7 @@ function toPackage(p: PackageSummary | PackageDetail): TravelPackage {
   const images = "images" in p ? p.images.map((i) => i.url) : p.image ? [p.image.url] : [];
   return {
     id: p.id,
+    slug: p.slug,
     title: p.title,
     destinationIds: p.destinations.map((d) => d.id),
     cities: p.destinations.map((d) => d.name),

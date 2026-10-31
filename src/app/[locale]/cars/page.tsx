@@ -4,8 +4,17 @@ import PageHeader from "@/components/ui/PageHeader";
 import CarsListing from "@/components/listing/CarsListing";
 import { ListingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { getCars } from "@/services/cars.service";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Car Rentals" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/cars",
+    title: "Car Rentals in Egypt",
+    description: "Rent a car in Egypt with transparent daily rates, flexible pickup locations and a range of vehicles from economy to premium SUV.",
+  });
+}
 
 export default async function CarsPage() {
   const cars = await getCars();

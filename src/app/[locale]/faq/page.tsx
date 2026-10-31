@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import FaqView from "@/components/content/FaqView";
 import PageHeader from "@/components/ui/PageHeader";
 import { faqCategories } from "@/data/faq";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "FAQ" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/faq", title: "Frequently Asked Questions", description: "Answers to common questions about booking hotels, tours, cars, transfers and packages with AHF Travel." });
+}
 
 export default function FaqPage() {
   return (

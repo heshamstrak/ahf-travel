@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import ContentPage from "@/components/content/ContentPage";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Help Center" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/help", title: "Help Center", description: "Get support for your AHF Travel booking — contact options, guides and answers in one place." });
+}
 
 export default function HelpPage() {
   return (

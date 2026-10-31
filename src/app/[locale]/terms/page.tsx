@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import ContentPage from "@/components/content/ContentPage";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Terms & Conditions" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/terms", title: "Terms & Conditions", description: "The terms that govern your use of the AHF Travel website and any booking you make through it." });
+}
 
 export default function TermsPage() {
   return (

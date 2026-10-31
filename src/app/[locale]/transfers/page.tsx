@@ -3,8 +3,17 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/ui/PageHeader";
 import TransfersBooking from "@/components/transfers/TransfersBooking";
 import { getLocations } from "@/services/transfers.service";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Airport Transfers" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/transfers",
+    title: "Airport & Private Transfers in Egypt",
+    description: "Book a private airport transfer or point-to-point transfer in Egypt, with fixed prices by vehicle class and route.",
+  });
+}
 
 export default async function TransfersPage() {
   const locations = await getLocations();

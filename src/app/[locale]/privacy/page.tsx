@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import ContentPage from "@/components/content/ContentPage";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Privacy Policy" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({ locale, path: "/privacy", title: "Privacy Policy", description: "How AHF Travel collects, uses and protects your personal information." });
+}
 
 export default function PrivacyPage() {
   return (

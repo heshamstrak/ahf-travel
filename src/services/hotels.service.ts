@@ -14,6 +14,7 @@ function toHotel(h: HotelSummary | HotelDetail): Hotel {
   const images = "images" in h ? h.images.map((i) => i.url) : h.image ? [h.image.url] : [];
   return {
     id: h.id,
+    slug: h.slug,
     name: h.name,
     destinationId: h.destination.id,
     location: h.destination.name,

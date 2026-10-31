@@ -5,7 +5,7 @@ import { getTours } from "@/services/tours.service";
 import { getCars } from "@/services/cars.service";
 import { getPackages } from "@/services/packages.service";
 
-export const metadata: Metadata = { title: "Favorites" };
+export const metadata: Metadata = { title: "Favorites", robots: { index: false, follow: false } };
 
 export default async function FavoritesPage() {
   const [hotels, tours, cars, packages] = await Promise.all([getHotels(), getTours(), getCars(), getPackages()]);

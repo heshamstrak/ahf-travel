@@ -11,6 +11,7 @@ function toTour(t: TourSummary | TourDetail): Tour {
   const images = "images" in t ? t.images.map((i) => i.url) : t.image ? [t.image.url] : [];
   return {
     id: t.id,
+    slug: t.slug,
     title: t.title,
     category: t.category,
     destinationId: t.destination.id,

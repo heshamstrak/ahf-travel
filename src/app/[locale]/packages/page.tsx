@@ -5,8 +5,17 @@ import PackagesListing from "@/components/listing/PackagesListing";
 import { ListingSkeleton } from "@/components/ui/LoadingSkeleton";
 import { getPackages } from "@/services/packages.service";
 import { getDestinations } from "@/services/destinations.service";
+import { buildMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = { title: "Travel Packages" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    path: "/packages",
+    title: "Egypt Travel Packages",
+    description: "Multi-day Egypt travel packages bundling hotels, tours and transfers into one itinerary, from budget to luxury.",
+  });
+}
 
 export default async function PackagesPage() {
   const [packages, destinations] = await Promise.all([getPackages(), getDestinations()]);
