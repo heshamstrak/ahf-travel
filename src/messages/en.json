@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "home": "Home",
+    "hotels": "Hotels",
+    "tours": "Tours",
+    "cars": "Cars",
+    "transfers": "Transfers",
+    "packages": "Packages",
+    "signIn": "Sign In",
+    "createAccount": "Create Account",
+    "myBookings": "My Bookings",
+    "favorites": "Favorites",
+    "profile": "Profile",
+    "signOut": "Sign out",
+    "menu": "Menu",
+    "closeMenu": "Close menu"
+  },
+  "search": {
+    "hotels": "Hotels",
+    "tours": "Tours",
+    "cars": "Cars",
+    "transfers": "Transfers",
+    "searchHotels": "Search Hotels",
+    "findExperiences": "Find Experiences",
+    "searchCars": "Search Cars",
+    "findTransfer": "Find Transfer"
+  },
+  "footer": {
+    "explore": "Explore",
+    "company": "Company",
+    "support": "Support",
+    "tagline": "Your all-in-one platform for hotels, tours, car rentals and airport transfers across Egypt.",
+    "address": "Nile Corniche, Cairo, Egypt",
+    "exploreLinks": {
+      "hotels": "Hotels",
+      "tours": "Tours",
+      "cars": "Cars",
+      "transfers": "Transfers",
+      "packages": "Packages"
+    },
+    "companyLinks": {
+      "about": "About Us",
+      "contact": "Contact",
+      "careers": "Careers"
+    },
+    "supportLinks": {
+      "help": "Help Center",
+      "faq": "FAQ",
+      "cancellationPolicy": "Cancellation Policy",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    },
+    "rightsReserved": "All rights reserved."
+  },
+  "common": {
+    "viewDetails": "View Details",
+    "bookNow": "Book Now",
+    "loadMore": "Load more",
+    "filters": "Filters",
+    "sort": "Sort by"
+  },
+  "settings": {
+    "currencyLanguage": "Currency and language",
+    "currency": "Currency",
+    "language": "Language"
+  }
+}

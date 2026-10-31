@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import MyBookingsView from "@/components/booking/MyBookingsView";
 import { SkeletonBlock } from "@/components/ui/LoadingSkeleton";

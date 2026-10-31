@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BedDouble, Check, MapPin, Maximize2, Users } from "lucide-react";
 import { Hotel, Room } from "@/data/types";

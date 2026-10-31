@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Sparkles } from "lucide-react";
 import { Destination } from "@/data/types";
 

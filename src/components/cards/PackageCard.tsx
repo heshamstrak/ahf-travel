@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Building2, Calendar, Car, MapPin, Ticket } from "lucide-react";
 import { TravelPackage } from "@/data/types";
 import FavoriteButton from "@/components/ui/FavoriteButton";

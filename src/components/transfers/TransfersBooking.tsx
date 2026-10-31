@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { ArrowDownUp, Plane } from "lucide-react";
 import { TransferVehicle } from "@/data/types";
 import type { LocationRef, TransferRateView } from "@/lib/api/types";

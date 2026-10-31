@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "hotels": "الفنادق",
+    "tours": "الجولات",
+    "cars": "السيارات",
+    "transfers": "النقل",
+    "packages": "الباقات",
+    "signIn": "تسجيل الدخول",
+    "createAccount": "إنشاء حساب",
+    "myBookings": "حجوزاتي",
+    "favorites": "المفضلة",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج",
+    "menu": "القائمة",
+    "closeMenu": "إغلاق القائمة"
+  },
+  "search": {
+    "hotels": "فنادق",
+    "tours": "جولات",
+    "cars": "سيارات",
+    "transfers": "نقل",
+    "searchHotels": "ابحث عن فنادق",
+    "findExperiences": "ابحث عن تجارب",
+    "searchCars": "ابحث عن سيارات",
+    "findTransfer": "ابحث عن نقل"
+  },
+  "footer": {
+    "explore": "استكشف",
+    "company": "الشركة",
+    "support": "الدعم",
+    "tagline": "منصتك الشاملة للفنادق والجولات وتأجير السيارات ونقل المطار في جميع أنحاء مصر.",
+    "address": "كورنيش النيل، القاهرة، مصر",
+    "exploreLinks": {
+      "hotels": "الفنادق",
+      "tours": "الجولات",
+      "cars": "السيارات",
+      "transfers": "النقل",
+      "packages": "الباقات"
+    },
+    "companyLinks": {
+      "about": "من نحن",
+      "contact": "اتصل بنا",
+      "careers": "وظائف"
+    },
+    "supportLinks": {
+      "help": "مركز المساعدة",
+      "faq": "الأسئلة الشائعة",
+      "cancellationPolicy": "سياسة الإلغاء",
+      "terms": "الشروط والأحكام",
+      "privacy": "سياسة الخصوصية"
+    },
+    "rightsReserved": "جميع الحقوق محفوظة."
+  },
+  "common": {
+    "viewDetails": "عرض التفاصيل",
+    "bookNow": "احجز الآن",
+    "loadMore": "عرض المزيد",
+    "filters": "الفلاتر",
+    "sort": "ترتيب حسب"
+  },
+  "settings": {
+    "currencyLanguage": "العملة واللغة",
+    "currency": "العملة",
+    "language": "اللغة"
+  }
+}

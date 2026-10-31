@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { FormEvent, useState } from "react";
 import { MailCheck } from "lucide-react";
 import { api, ApiError } from "@/lib/api/client";

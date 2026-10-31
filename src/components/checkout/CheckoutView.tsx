@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { AlertCircle, Clock, Lock } from "lucide-react";
 import { useApp } from "@/context/AppProvider";
 import { api, ApiError, newIdempotencyKey } from "@/lib/api/client";

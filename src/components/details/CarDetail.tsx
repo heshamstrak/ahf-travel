@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import { Briefcase, DoorOpen, Fuel, Gauge, ShieldCheck, Snowflake, Users, Wallet, Zap } from "lucide-react";
 import { Car } from "@/data/types";

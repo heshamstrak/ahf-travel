@@ -1,22 +1,18 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AppProvider } from "@/context/AppProvider";
 import { getBranding } from "@/services/branding.service";
-import "./globals.css";
+import { routing } from "@/i18n/routing";
+import { jakarta, fraunces } from "@/lib/fonts";
+import "../globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-});
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 const DEFAULT_SITE_NAME = "AHF Travel";
 const DEFAULT_DESCRIPTION =
@@ -36,9 +32,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
+  setRequestLocale(locale);
+
   const branding = await getBranding();
   const { theme } = branding;
+  const dir = locale === "ar" ? "rtl" : "ltr";
 
   // Admin-picked colors land here as CSS custom-property overrides on top of globals.css's
   // defaults — every consumer (Button, Navbar, Footer) references `var(--site-*, <default>)`, so
@@ -53,14 +60,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const overrideCss = overrides.length > 0 ? `:root { ${overrides.join(" ")} }` : null;
 
   return (
-    <html lang="en" className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}>
+    <html lang={locale} dir={dir} className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}>
       <head>{overrideCss ? <style dangerouslySetInnerHTML={{ __html: overrideCss }} /> : null}</head>
       <body className="flex min-h-full flex-col overflow-x-hidden bg-white text-slate-900">
-        <AppProvider>
-          <Navbar branding={branding} />
-          <main className="flex-1">{children}</main>
-          <Footer branding={branding} />
-        </AppProvider>
+        <NextIntlClientProvider locale={locale}>
+          <AppProvider>
+            <Navbar branding={branding} />
+            <main className="flex-1">{children}</main>
+            <Footer branding={branding} />
+          </AppProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

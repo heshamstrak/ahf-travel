@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Building2, Calendar, Car, Check, MapPin, Ticket, X } from "lucide-react";
 import { TravelPackage } from "@/data/types";

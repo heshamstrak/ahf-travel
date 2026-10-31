@@ -1,8 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { api, ApiError } from "@/lib/api/client";
 import { hasErrors, minLength, Errors } from "@/lib/validation";

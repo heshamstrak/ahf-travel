@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Heart, Menu, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import NextImage from "next/image";
@@ -21,7 +21,8 @@ const navLinks = [
 ];
 
 export default function Navbar({ branding }: { branding?: Branding } = {}) {
-  const { t, user, signOut, favorites } = useApp();
+  const { user, signOut, favorites } = useApp();
+  const t = useTranslations();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -157,7 +158,7 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
         <button
           type="button"
           className={`inline-flex items-center justify-center rounded-full p-2 xl:hidden ${solid ? "text-slate-900" : "text-white"}`}
-          aria-label={mobileOpen ? "Close menu" : t("nav.menu")}
+          aria-label={mobileOpen ? t("nav.closeMenu") : t("nav.menu")}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
           onClick={() => setMobileOpen((v) => !v)}

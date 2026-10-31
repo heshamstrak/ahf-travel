@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { MapPin, Star } from "lucide-react";
 import { Hotel } from "@/data/types";
 import FavoriteButton from "@/components/ui/FavoriteButton";

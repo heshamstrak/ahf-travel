@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Clock, Globe, Info, MapPin, Star, Users, X } from "lucide-react";
 import { Tour } from "@/data/types";

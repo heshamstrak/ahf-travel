@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { FormEvent, useState } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { email, hasErrors, required, Errors } from "@/lib/validation";
