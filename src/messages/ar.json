@@ -63,5 +63,24 @@
     "currencyLanguage": "العملة واللغة",
     "currency": "العملة",
     "language": "اللغة"
+  },
+  "card": {
+    "startingFrom": "يبدأ من",
+    "from": "من",
+    "perPerson": "/ للشخص",
+    "perNight": "/ لليلة",
+    "perDay": "في اليوم",
+    "priceOnRequest": "السعر عند الطلب",
+    "reviews": "تقييم",
+    "starHotel": "فندق {stars} نجوم",
+    "seats": "مقاعد",
+    "bags": "حقائب",
+    "doors": "أبواب",
+    "ac": "تكييف",
+    "totalForDays": "الإجمالي لمدة {days} أيام:",
+    "hotel": "فندق",
+    "tours": "جولات",
+    "transfers": "نقل",
+    "mostPopular": "الأكثر شهرة"
   }
 }

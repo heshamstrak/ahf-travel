@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin, Star } from "lucide-react";
 import { Hotel } from "@/data/types";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 
 export default function HotelCard({ hotel }: { hotel: Hotel }) {
+  const t = useTranslations();
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -22,7 +24,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-center gap-0.5 text-gold-500" aria-label={`${hotel.starRating} star hotel`}>
+        <div className="flex items-center gap-0.5 text-gold-500" aria-label={t("card.starHotel", { stars: hotel.starRating })}>
           {Array.from({ length: hotel.starRating }).map((_, i) => (
             <Star key={i} size={13} className="fill-gold-500 text-gold-500" />
           ))}
@@ -52,20 +54,20 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
             <span className="flex h-7 w-7 items-center justify-center rounded-md bg-brand-700 text-xs font-semibold text-white">
               {hotel.guestRating}
             </span>
-            <span className="text-xs text-slate-500">{hotel.reviewCount.toLocaleString("en-US")} reviews</span>
+            <span className="text-xs text-slate-500">{hotel.reviewCount.toLocaleString("en-US")} {t("card.reviews")}</span>
           </div>
           <div className="text-end">
             {hotel.priceAvailable ? (
               <>
-                <p className="text-xs text-slate-500">from</p>
+                <p className="text-xs text-slate-500">{t("card.from")}</p>
                 <PriceDisplay
                   amountEGP={hotel.pricePerNight}
-                  suffix="/night"
+                  suffix={t("card.perNight")}
                   className="font-display text-lg font-semibold text-slate-900"
                 />
               </>
             ) : (
-              <p className="font-display text-sm font-medium text-slate-500">Price on request</p>
+              <p className="font-display text-sm font-medium text-slate-500">{t("card.priceOnRequest")}</p>
             )}
           </div>
         </div>
@@ -74,7 +76,7 @@ export default function HotelCard({ hotel }: { hotel: Hotel }) {
           href={`/hotels/${hotel.slug || hotel.id}`}
           className="mt-3 inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
         >
-          View Details
+          {t("common.viewDetails")}
         </Link>
       </div>
     </article>

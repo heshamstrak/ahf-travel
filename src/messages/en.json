@@ -63,5 +63,24 @@
     "currencyLanguage": "Currency and language",
     "currency": "Currency",
     "language": "Language"
+  },
+  "card": {
+    "startingFrom": "Starting from",
+    "from": "from",
+    "perPerson": "/ person",
+    "perNight": "/night",
+    "perDay": "per day",
+    "priceOnRequest": "Price on request",
+    "reviews": "reviews",
+    "starHotel": "{stars} star hotel",
+    "seats": "seats",
+    "bags": "bags",
+    "doors": "doors",
+    "ac": "A/C",
+    "totalForDays": "Total for {days} days:",
+    "hotel": "Hotel",
+    "tours": "Tours",
+    "transfers": "Transfers",
+    "mostPopular": "Most Popular"
   }
 }

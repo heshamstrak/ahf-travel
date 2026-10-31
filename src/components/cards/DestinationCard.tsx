@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Sparkles } from "lucide-react";
 import { Destination } from "@/data/types";
 
 export default function DestinationCard({ destination }: { destination: Destination }) {
+  const t = useTranslations();
   return (
     <Link
       href={`/hotels?destination=${destination.id}`}
@@ -21,7 +23,7 @@ export default function DestinationCard({ destination }: { destination: Destinat
       {destination.featured ? (
         <span className="absolute start-4 top-4 flex items-center gap-1.5 rounded-md bg-gold-500 px-3 py-1 text-xs font-semibold text-white">
           <Sparkles size={12} />
-          Most Popular
+          {t("card.mostPopular")}
         </span>
       ) : null}
 
