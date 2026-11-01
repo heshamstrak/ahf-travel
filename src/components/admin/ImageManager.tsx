@@ -6,7 +6,7 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, LoadingState } from "./ui";
 
-export type MediaOwnerType = "DESTINATION" | "HOTEL" | "ROOM" | "TOUR" | "CAR_MODEL" | "TRANSFER_VEHICLE_CLASS" | "PACKAGE" | "SITE_BRANDING";
+export type MediaOwnerType = "DESTINATION" | "HOTEL" | "ROOM" | "TOUR" | "CAR_MODEL" | "TRANSFER_VEHICLE_CLASS" | "PACKAGE" | "CONFERENCE_EVENT" | "SITE_BRANDING";
 
 interface MediaItem {
   id: string;

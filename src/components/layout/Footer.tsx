@@ -15,6 +15,7 @@ const columns = [
       { labelKey: "footer.exploreLinks.cars", href: "/cars" },
       { labelKey: "footer.exploreLinks.transfers", href: "/transfers" },
       { labelKey: "footer.exploreLinks.packages", href: "/packages" },
+      { labelKey: "footer.exploreLinks.conferencesEvents", href: "/conferences-events" },
     ],
   },
   {

@@ -155,6 +155,20 @@ export interface TravelPackage {
   availableDates: string[];
 }
 
+export interface ConferenceEvent {
+  id: string;
+  slug: string;
+  name: string;
+  venue: string;
+  organizerName: string;
+  image: string;
+  gallery: string[];
+  description: string;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
+}
+
 export interface Review {
   id: string;
   name: string;

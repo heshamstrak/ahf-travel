@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import ContactView from "@/components/content/ContactView";
 import PageHeader from "@/components/ui/PageHeader";
@@ -17,7 +18,9 @@ export default function ContactPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Contact" }]}
       />
       <div className="mx-auto max-w-8xl px-4 py-12 sm:px-6 lg:px-8">
-        <ContactView />
+        <Suspense>
+          <ContactView />
+        </Suspense>
       </div>
     </>
   );

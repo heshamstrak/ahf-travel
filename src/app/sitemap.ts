@@ -5,6 +5,7 @@ import { getTours } from "@/services/tours.service";
 import { getHotels } from "@/services/hotels.service";
 import { getCars } from "@/services/cars.service";
 import { getPackages } from "@/services/packages.service";
+import { getConferenceEvents } from "@/services/conference-events.service";
 
 type Sitemap = MetadataRoute.Sitemap;
 
@@ -15,6 +16,7 @@ const STATIC_PATHS = [
   "/cars",
   "/transfers",
   "/packages",
+  "/conferences-events",
   "/about",
   "/contact",
   "/faq",
@@ -47,13 +49,20 @@ function entry(path: string): Sitemap[number] {
  * it's deliberately never the one listed here).
  */
 export default async function sitemap(): Promise<Sitemap> {
-  const [tours, hotels, cars, packages] = await Promise.all([getTours(), getHotels(), getCars(), getPackages()]);
+  const [tours, hotels, cars, packages, conferenceEvents] = await Promise.all([
+    getTours(),
+    getHotels(),
+    getCars(),
+    getPackages(),
+    getConferenceEvents(),
+  ]);
 
   const staticEntries = STATIC_PATHS.map(entry);
   const tourEntries = tours.filter((t) => t.slug).map((t) => entry(`/tours/${t.slug}`));
   const hotelEntries = hotels.filter((h) => h.slug).map((h) => entry(`/hotels/${h.slug}`));
   const carEntries = cars.filter((c) => c.slug).map((c) => entry(`/cars/${c.slug}`));
   const packageEntries = packages.filter((p) => p.slug).map((p) => entry(`/packages/${p.slug}`));
+  const conferenceEventEntries = conferenceEvents.filter((c) => c.slug).map((c) => entry(`/conferences-events/${c.slug}`));
 
-  return [...staticEntries, ...tourEntries, ...hotelEntries, ...carEntries, ...packageEntries];
+  return [...staticEntries, ...tourEntries, ...hotelEntries, ...carEntries, ...packageEntries, ...conferenceEventEntries];
 }
