@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Printer, XCircle } from "lucide-react";
 import type { BookingView, PaymentView } from "@/lib/api/types";

@@ -2,9 +2,11 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Eye } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { Card, ErrorState, inputClass, LoadingState, PageHeader, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
 
 interface BookingRow {
   id: string;
@@ -61,6 +63,12 @@ function AdminBookingsPageInner() {
     { key: "payment", header: "Payment", render: (b) => <StatusBadge status={b.paymentStatus} /> },
     { key: "total", header: "Total", sortValue: (b) => Number(b.total), render: (b) => <span className="font-medium text-slate-800">{b.total} {b.currency}</span> },
     { key: "createdAt", header: "Created", sortValue: (b) => b.createdAt, render: (b) => new Date(b.createdAt).toLocaleDateString() },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      render: (b) => <RowActions actions={[{ key: "view", label: "View", icon: Eye, onClick: () => router.push(`/admin/bookings/${b.id}`) }]} />,
+    },
   ];
 
   return (

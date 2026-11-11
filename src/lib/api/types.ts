@@ -111,6 +111,8 @@ export interface PublicRoom {
 }
 
 // ---------------------------------------------------------------- Tours
+export type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 export interface TourSummary {
   id: string;
   slug: string;
@@ -122,7 +124,9 @@ export interface TourSummary {
   meetingPoint: string;
   rating: RatingView;
   destination: DestinationRef;
-  fromPricePerPerson: Money;
+  pricingMode: PricingMode;
+  /** Null when pricingMode is CONTACT_FOR_PRICE. */
+  fromPricePerPerson: Money | null;
   image: PublicImage | null;
 }
 export interface TourDetail extends Omit<TourSummary, "image" | "fromPricePerPerson"> {
@@ -133,7 +137,7 @@ export interface TourDetail extends Omit<TourSummary, "image" | "fromPricePerPer
   importantInfo: string[];
   itinerary: { time: string; offsetMinutes: number; title: string; description: string }[];
   cancellationPolicy: CancellationPolicyView;
-  fromPricePerPerson: Money;
+  fromPricePerPerson: Money | null;
   images: PublicImage[];
 }
 export interface TourSessionOffer {
@@ -161,7 +165,9 @@ export interface CarSummary {
   bags: number;
   doors: number;
   minDriverAge: number;
-  pricePerDay: Money;
+  pricingMode: PricingMode;
+  /** Null when pricingMode is CONTACT_FOR_PRICE. */
+  pricePerDay: Money | null;
   image: PublicImage | null;
   rental: RentalEcho | null;
 }
@@ -213,7 +219,9 @@ export interface PackageSummary {
   durationNights: number;
   budgetTier: string;
   pricingBasis: string;
-  startingPrice: Money;
+  pricingMode: PricingMode;
+  /** Null when pricingMode is CONTACT_FOR_PRICE. */
+  startingPrice: Money | null;
   destinations: DestinationRef[];
   includes: { hotel: boolean; tours: boolean; transfers: boolean };
   nextDeparture: string | null;
@@ -241,6 +249,29 @@ export interface DepartureOffer {
   id: string;
   startsOn: string;
   remainingTravellers: number;
+  priceOverride: Money | null;
+}
+
+// ---------------------------------------------------------------- Conferences & Events
+export interface ConferenceEventSummary {
+  id: string;
+  slug: string;
+  name: string;
+  venue: string | null;
+  organizerName: string | null;
+  pricingMode: PricingMode;
+  startingPrice: Money | null;
+  nextSession: string | null;
+  image: PublicImage | null;
+}
+export interface ConferenceEventDetail extends Omit<ConferenceEventSummary, "image" | "nextSession"> {
+  description: string;
+  images: PublicImage[];
+}
+export interface ConferenceEventSessionOffer {
+  id: string;
+  startsAt: string;
+  remainingSeats: number;
   priceOverride: Money | null;
 }
 

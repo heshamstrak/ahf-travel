@@ -1,15 +1,17 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Building2, Calendar, Car, MapPin, Ticket } from "lucide-react";
 import { TravelPackage } from "@/data/types";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 
 export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
+  const t = useTranslations();
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Link href={`/packages/${pkg.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/packages/${pkg.slug || pkg.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={pkg.image}
             alt=""
@@ -29,7 +31,7 @@ export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/packages/${pkg.id}`} className="hover:text-brand-700">
+          <Link href={`/packages/${pkg.slug || pkg.id}`} className="hover:text-brand-700">
             {pkg.title}
           </Link>
         </h3>
@@ -42,28 +44,34 @@ export default function PackageCard({ pkg }: { pkg: TravelPackage }) {
         <ul className="mt-3 flex flex-wrap gap-1.5">
           <li className="flex items-center gap-1 rounded-md bg-sand-100 px-2.5 py-1 text-xs font-medium text-slate-600">
             <Building2 size={12} />
-            Hotel
+            {t("card.hotel")}
           </li>
           <li className="flex items-center gap-1 rounded-md bg-sand-100 px-2.5 py-1 text-xs font-medium text-slate-600">
             <Ticket size={12} />
-            Tours
+            {t("card.tours")}
           </li>
           <li className="flex items-center gap-1 rounded-md bg-sand-100 px-2.5 py-1 text-xs font-medium text-slate-600">
             <Car size={12} />
-            Transfers
+            {t("card.transfers")}
           </li>
         </ul>
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
           <div>
-            <p className="text-xs text-slate-500">Starting from</p>
-            <PriceDisplay amountEGP={pkg.startingPrice} className="font-display text-lg font-semibold text-slate-900" />
+            {pkg.pricingMode === "FIXED_PRICE" && pkg.startingPrice !== null ? (
+              <>
+                <p className="text-xs text-slate-500">{t("card.startingFrom")}</p>
+                <PriceDisplay amountEGP={pkg.startingPrice} className="font-display text-lg font-semibold text-slate-900" />
+              </>
+            ) : (
+              <p className="font-display text-sm font-medium text-slate-500">{t("card.priceOnRequest")}</p>
+            )}
           </div>
           <Link
-            href={`/packages/${pkg.id}`}
+            href={`/packages/${pkg.slug || pkg.id}`}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
-            View
+            {t("common.viewDetails")}
           </Link>
         </div>
       </div>

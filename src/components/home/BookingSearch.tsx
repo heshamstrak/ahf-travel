@@ -1,11 +1,11 @@
 "use client";
 
 import { FormEvent, ReactNode, useId, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { BedDouble, Calendar, Car, Clock, Compass, MapPin, Minus, Plus, Search, Shuffle, Users } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { Destination } from "@/data/types";
-import { useApp } from "@/context/AppProvider";
 import { addDays } from "@/lib/dates";
 
 type TabKey = "hotels" | "tours" | "cars" | "transfers";
@@ -60,7 +60,7 @@ function toQuery(params: Record<string, string>) {
 
 export default function BookingSearch({ destinations }: { destinations: Destination[] }) {
   const router = useRouter();
-  const { t } = useApp();
+  const t = useTranslations();
   const [activeTab, setActiveTab] = useState<TabKey>("hotels");
   const [guests, setGuests] = useState(2);
   const [rooms, setRooms] = useState(1);

@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { BadgeCheck, EyeOff, Pencil, X } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, PageHeader, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
 
 const KINDS = ["TAX", "FEE", "SURCHARGE", "DISCOUNT"];
 const PRODUCT_TYPES = ["", "HOTEL", "TOUR", "CAR", "TRANSFER", "PACKAGE"];
@@ -124,19 +125,17 @@ export default function AdminPricingRulesPage() {
     { key: "status", header: "Status", render: (r) => <StatusBadge status={r.isActive ? "PUBLISHED" : "DRAFT"} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (r) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {r.isActive ? (
-            <button onClick={() => setActive(r, false)} className="text-xs font-medium text-slate-500 hover:underline">
-              Deactivate
-            </button>
-          ) : (
-            <button onClick={() => setActive(r, true)} className="text-xs font-medium text-brand-700 hover:underline">
-              Activate
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={[
+            { key: "edit", label: "Edit", icon: Pencil, onClick: () => setEditing(r) },
+            r.isActive
+              ? { key: "deactivate", label: "Deactivate", icon: EyeOff, onClick: () => setActive(r, false) }
+              : { key: "activate", label: "Activate", icon: BadgeCheck, onClick: () => setActive(r, true) },
+          ]}
+        />
       ),
     },
   ];

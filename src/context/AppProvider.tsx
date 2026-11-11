@@ -1,15 +1,13 @@
 "use client";
 
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { CurrencyCode, LanguageCode, ProductType } from "@/data/types";
+import { CurrencyCode, ProductType } from "@/data/types";
 import { isCurrencyCode } from "@/lib/currency";
-import { translate } from "@/lib/i18n";
 import { usePersistentState } from "@/lib/persistent";
 import { api, ApiError, getAccessToken, setAccessToken, tryRefresh } from "@/lib/api/client";
 import type { LoginResponse, PublicUser } from "@/lib/api/types";
 
 const CURRENCY_KEY = "eb.currency";
-const LANGUAGE_KEY = "eb.language";
 const FAVORITES_KEY = "eb.favorites";
 
 const NO_FAVORITES: FavoriteItem[] = [];
@@ -22,9 +20,6 @@ export interface FavoriteItem {
 interface AppContextValue {
   currency: CurrencyCode;
   setCurrency: (c: CurrencyCode) => void;
-  language: LanguageCode;
-  setLanguage: (l: LanguageCode) => void;
-  t: (key: string) => string;
   favorites: FavoriteItem[];
   isFavorite: (type: FavoriteItem["type"], id: string) => boolean;
   toggleFavorite: (type: FavoriteItem["type"], id: string) => void;
@@ -42,18 +37,11 @@ const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [storedCurrency, setStoredCurrency] = usePersistentState<string>(CURRENCY_KEY, "EGP");
-  const [storedLanguage, setStoredLanguage] = usePersistentState<LanguageCode>(LANGUAGE_KEY, "en");
   const [favorites, setFavorites] = usePersistentState<FavoriteItem[]>(FAVORITES_KEY, NO_FAVORITES);
   const [user, setUser] = useState<PublicUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
 
   const currency: CurrencyCode = isCurrencyCode(storedCurrency) ? storedCurrency : "EGP";
-  const language: LanguageCode = storedLanguage === "ar" ? "ar" : "en";
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
-  }, [language]);
 
   const refreshUser = useCallback(async () => {
     try {
@@ -88,7 +76,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setCurrency = useCallback((c: CurrencyCode) => setStoredCurrency(c), [setStoredCurrency]);
-  const setLanguage = useCallback((l: LanguageCode) => setStoredLanguage(l), [setStoredLanguage]);
 
   const isFavorite = useCallback(
     (type: FavoriteItem["type"], id: string) => favorites.some((f) => f.type === type && f.id === id),
@@ -127,9 +114,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     () => ({
       currency,
       setCurrency,
-      language,
-      setLanguage,
-      t: (key: string) => translate(language, key),
       favorites,
       isFavorite,
       toggleFavorite,
@@ -139,7 +123,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       signOut,
       refreshUser,
     }),
-    [currency, setCurrency, language, setLanguage, favorites, isFavorite, toggleFavorite, user, authLoading, signIn, signOut, refreshUser]
+    [currency, setCurrency, favorites, isFavorite, toggleFavorite, user, authLoading, signIn, signOut, refreshUser]
   );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Eye } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, PageHeader, PrimaryButton, SecondaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
 
 interface InstapayItem {
   id: string;
@@ -115,6 +117,12 @@ export default function AdminPaymentsPage() {
     { key: "amount", header: "Amount", sortValue: (p) => Number(p.amount), render: (p) => `${p.amount} ${p.currency}` },
     { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
     { key: "submitted", header: "Submitted", sortValue: (p) => p.proofSubmittedAt ?? "", render: (p) => (p.proofSubmittedAt ? new Date(p.proofSubmittedAt).toLocaleString() : "—") },
+    {
+      key: "actions",
+      header: "",
+      className: "text-right",
+      render: (p) => <RowActions actions={[{ key: "view", label: "View", icon: Eye, onClick: () => openDetail(p.id) }]} />,
+    },
   ];
 
   return (

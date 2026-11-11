@@ -15,6 +15,7 @@ function toPackage(p: PackageSummary | PackageDetail): TravelPackage {
   const images = "images" in p ? p.images.map((i) => i.url) : p.image ? [p.image.url] : [];
   return {
     id: p.id,
+    slug: p.slug,
     title: p.title,
     destinationIds: p.destinations.map((d) => d.id),
     cities: p.destinations.map((d) => d.name),
@@ -30,7 +31,8 @@ function toPackage(p: PackageSummary | PackageDetail): TravelPackage {
     itinerary: "itinerary" in p ? toItinerary(p.itinerary) : [],
     included: "included" in p ? p.included : [],
     excluded: "excluded" in p ? p.excluded : [],
-    startingPrice: Number(p.startingPrice.amount),
+    pricingMode: p.pricingMode,
+    startingPrice: p.startingPrice ? Number(p.startingPrice.amount) : null,
     availableDates: [],
   };
 }

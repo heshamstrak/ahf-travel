@@ -28,12 +28,20 @@ export async function serverGet<T>(path: string, query?: Record<string, QueryVal
 }
 
 /** Same as serverGet, but returns null for a 404 instead of throwing — convenient for detail pages
- *  that call next/navigation's notFound(). */
+ *  that call next/navigation's notFound(). Also treats a malformed `idOrSlug` path param (422
+ *  VALIDATION_FAILED on that field) as not-found: a visitor following a stale or hand-typed link
+ *  should see a 404 page, not a crash — the 422-vs-404 distinction in parseIdOrSlug is for API
+ *  consumers, not for this public-facing fallback. */
 export async function serverGetOrNull<T>(path: string, query?: Record<string, QueryValue>): Promise<T | null> {
   try {
     return await serverGet<T>(path, query);
   } catch (error) {
-    if (error instanceof ApiError && error.status === 404) return null;
+    if (error instanceof ApiError) {
+      if (error.status === 404) return null;
+      if (error.status === 422 && error.code === "VALIDATION_FAILED" && error.fieldErrors?.some((e) => e.field === "idOrSlug")) {
+        return null;
+      }
+    }
     throw error;
   }
 }

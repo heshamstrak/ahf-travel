@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Clock, Globe, Info, MapPin, Star, Users, X } from "lucide-react";
 import { Tour } from "@/data/types";
@@ -15,6 +14,7 @@ import Button from "@/components/ui/Button";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import EstimateCard from "@/components/booking/EstimateCard";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
+import ContactForPriceCta from "@/components/product/ContactForPriceCta";
 
 function sessionLabel(session: TourSessionOffer): string {
   const d = new Date(session.startsAt);
@@ -23,15 +23,17 @@ function sessionLabel(session: TourSessionOffer): string {
   return `${date} · ${time} (${session.remainingUnits} spots left)`;
 }
 
-export default function TourDetail({ tour }: { tour: Tour }) {
+export default function TourDetail({ tour, whatsappNumber }: { tour: Tour; whatsappNumber: string | null }) {
   const router = useRouter();
   const [guests, setGuests] = useState(2);
   const [sessions, setSessions] = useState<TourSessionOffer[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [loadingSessions, setLoadingSessions] = useState(true);
+  const bookable = tour.pricingMode === "FIXED_PRICE";
+  const [loadingSessions, setLoadingSessions] = useState(bookable);
   const [sessionsError, setSessionsError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!bookable) return;
     let cancelled = false;
     Promise.resolve()
       .then(() => {
@@ -55,10 +57,10 @@ export default function TourDetail({ tour }: { tour: Tour }) {
     return () => {
       cancelled = true;
     };
-  }, [tour.id, guests]);
+  }, [tour.id, guests, bookable]);
 
   const selectedSession = useMemo(() => sessions.find((s) => s.id === sessionId) ?? null, [sessions, sessionId]);
-  const perPerson = selectedSession?.pricePerPerson ? Number(selectedSession.pricePerPerson.amount) : tour.startingPrice;
+  const perPerson = selectedSession?.pricePerPerson ? Number(selectedSession.pricePerPerson.amount) : tour.startingPrice ?? 0;
   const estimateEGP = perPerson * guests;
 
   const book = () => {
@@ -190,7 +192,9 @@ export default function TourDetail({ tour }: { tour: Tour }) {
           </div>
 
           <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-            {loadingSessions ? (
+            {!bookable ? (
+              <ContactForPriceCta productName={tour.title} productType="tour" productId={tour.id} whatsappNumber={whatsappNumber} />
+            ) : loadingSessions ? (
               <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                 <h2 className="font-display text-lg font-medium text-slate-900">Select date & guests</h2>
                 <p className="mt-3 text-sm text-slate-500">Loading available dates…</p>

@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Heart, Menu, User, X } from "lucide-react";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { Heart, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import NextImage from "next/image";
 import { useApp } from "@/context/AppProvider";
 import Button from "@/components/ui/Button";
 import SettingsMenu from "./SettingsMenu";
+import AccountMenu from "./AccountMenu";
 import type { Branding } from "@/services/branding.service";
 import { hexToRgba } from "@/lib/color";
 
@@ -21,7 +22,8 @@ const navLinks = [
 ];
 
 export default function Navbar({ branding }: { branding?: Branding } = {}) {
-  const { t, user, signOut, favorites } = useApp();
+  const { user, signOut, favorites } = useApp();
+  const t = useTranslations();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -85,6 +87,7 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
+    <>
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         customized ? "shadow-sm" : solid ? "bg-white/95 shadow-sm backdrop-blur-sm" : "bg-gradient-to-b from-black/50 to-transparent"
@@ -130,34 +133,13 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
               </span>
             ) : null}
           </Link>
-          <Link href="/my-bookings" className={linkClass(pathname.startsWith("/my-bookings"))}>
-            {t("nav.myBookings")}
-          </Link>
-          {user ? (
-            <>
-              <Link href="/profile" className={linkClass(pathname.startsWith("/profile"))}>
-                {user.firstName}
-              </Link>
-              <button type="button" onClick={signOut} className={`text-sm font-medium ${solid ? "text-slate-600 hover:text-brand-700" : "text-white/90 hover:text-white"}`}>
-                {t("nav.signOut")}
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className={`text-sm font-medium ${solid ? "text-slate-700 hover:text-brand-700" : "text-white/90 hover:text-white"}`}>
-                {t("nav.signIn")}
-              </Link>
-              <Button href="/register" size="sm" variant={solid ? "secondary" : "ghost"}>
-                {t("nav.createAccount")}
-              </Button>
-            </>
-          )}
+          <AccountMenu tone={solid ? "dark" : "light"} />
         </div>
 
         <button
           type="button"
           className={`inline-flex items-center justify-center rounded-full p-2 xl:hidden ${solid ? "text-slate-900" : "text-white"}`}
-          aria-label={mobileOpen ? "Close menu" : t("nav.menu")}
+          aria-label={mobileOpen ? t("nav.closeMenu") : t("nav.menu")}
           aria-expanded={mobileOpen}
           aria-controls="mobile-menu"
           onClick={() => setMobileOpen((v) => !v)}
@@ -165,6 +147,7 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+    </header>
 
       {mobileOpen ? (
         <div
@@ -172,7 +155,7 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
           onClick={(e) => {
             if ((e.target as HTMLElement).closest("a")) setMobileOpen(false);
           }}
-          className="fixed inset-x-0 bottom-0 top-20 overflow-y-auto border-t border-slate-100 bg-white px-4 pb-8 pt-4 xl:hidden"
+          className="fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto border-t border-slate-100 bg-white px-4 pb-8 pt-4 xl:hidden"
         >
           <nav aria-label="Mobile" className="flex flex-col gap-1">
             {navLinks.map((link) => (
@@ -182,12 +165,9 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
             ))}
           </nav>
 
-          <div className="mt-4 grid grid-cols-2 gap-1 border-t border-slate-100 pt-4">
+          <div className="mt-4 border-t border-slate-100 pt-4">
             <Link href="/favorites" className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium text-slate-800 hover:bg-sand-50">
               <Heart size={16} /> {t("nav.favorites")} ({favorites.length})
-            </Link>
-            <Link href="/my-bookings" className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-medium text-slate-800 hover:bg-sand-50">
-              {t("nav.myBookings")}
             </Link>
           </div>
 
@@ -195,29 +175,40 @@ export default function Navbar({ branding }: { branding?: Branding } = {}) {
             <SettingsMenu tone="dark" />
           </div>
 
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-6 flex flex-col gap-3 border-t border-slate-100 pt-6">
             {user ? (
               <>
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-sand-50 px-4 py-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-800">
+                    {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()}
+                  </span>
+                  <p className="truncate text-sm font-medium text-slate-900">
+                    {user.firstName} {user.lastName}
+                  </p>
+                </div>
                 <Link href="/profile" className="flex items-center justify-center gap-2 rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-800">
-                  <User size={16} /> {t("nav.profile")}
+                  {t("nav.myProfile")}
+                </Link>
+                <Link href="/my-bookings" className="flex items-center justify-center gap-2 rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-800">
+                  {t("nav.myBookings")}
                 </Link>
                 <Button variant="outline" onClick={signOut} className="w-full">
-                  {t("nav.signOut")}
+                  {t("nav.logout")}
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/login" className="flex items-center justify-center gap-2 rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-800">
-                  <User size={16} /> {t("nav.signIn")}
+                  {t("nav.login")}
                 </Link>
                 <Button href="/register" variant="secondary" className="w-full">
-                  {t("nav.createAccount")}
+                  {t("nav.register")}
                 </Button>
               </>
             )}
           </div>
         </div>
       ) : null}
-    </header>
+    </>
   );
 }

@@ -7,6 +7,7 @@ function toDestination(d: DestinationSummary): Destination {
   const count = d.productCounts.hotels + d.productCounts.tours + d.productCounts.packages;
   return {
     id: d.id,
+    slug: d.slug,
     name: d.name,
     country: d.countryCode,
     image: d.image?.url ?? FALLBACK_IMAGE,

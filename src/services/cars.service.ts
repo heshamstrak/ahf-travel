@@ -12,6 +12,7 @@ function toCar(c: CarSummary | CarDetail): Car {
   const images = "images" in c ? c.images.map((i) => i.url) : c.image ? [c.image.url] : [];
   return {
     id: c.id,
+    slug: c.slug,
     name: c.name,
     brand: c.brand,
     category: c.category,
@@ -22,7 +23,8 @@ function toCar(c: CarSummary | CarDetail): Car {
     doors: c.doors,
     transmission: TRANSMISSION_LABEL[c.transmission] ?? "Automatic",
     airConditioning: c.hasAirConditioning,
-    pricePerDay: Number(c.pricePerDay.amount),
+    pricingMode: c.pricingMode,
+    pricePerDay: c.pricePerDay ? Number(c.pricePerDay.amount) : null,
     mileageIncluded: "includedKmPerDay" in c ? `${c.includedKmPerDay} km/day` : "",
     fuelPolicy: "fuelPolicy" in c ? c.fuelPolicy : "",
     depositEGP: "deposit" in c ? Number(c.deposit.amount) : 0,

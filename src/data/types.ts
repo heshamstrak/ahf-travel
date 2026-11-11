@@ -5,6 +5,7 @@ export type ProductType = "hotel" | "tour" | "car" | "transfer" | "package";
 
 export interface Destination {
   id: string;
+  slug: string;
   name: string;
   country: string;
   image: string;
@@ -17,6 +18,7 @@ export type HotelPropertyType = "Hotel" | "Resort" | "Apartment" | "Villa";
 
 export interface Hotel {
   id: string;
+  slug: string;
   name: string;
   destinationId: string;
   location: string;
@@ -56,6 +58,7 @@ export interface ItineraryItem {
 
 export interface Tour {
   id: string;
+  slug: string;
   title: string;
   category: string;
   destinationId: string;
@@ -68,7 +71,9 @@ export interface Tour {
   reviewCount: number;
   languages: string[];
   maxGroupSize: number;
-  startingPrice: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
   overview: string;
   highlights: string[];
   itinerary: ItineraryItem[];
@@ -85,6 +90,7 @@ export type CarTransmission = "Automatic" | "Manual";
 
 export interface Car {
   id: string;
+  slug: string;
   name: string;
   brand: string;
   category: string;
@@ -95,7 +101,9 @@ export interface Car {
   doors: number;
   transmission: CarTransmission;
   airConditioning: boolean;
-  pricePerDay: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  pricePerDay: number | null;
   mileageIncluded: string;
   fuelPolicy: string;
   depositEGP: number;
@@ -125,6 +133,7 @@ export interface PackageDay {
 
 export interface TravelPackage {
   id: string;
+  slug: string;
   title: string;
   destinationIds: string[];
   cities: string[];
@@ -140,8 +149,24 @@ export interface TravelPackage {
   itinerary: PackageDay[];
   included: string[];
   excluded: string[];
-  startingPrice: number;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
   availableDates: string[];
+}
+
+export interface ConferenceEvent {
+  id: string;
+  slug: string;
+  name: string;
+  venue: string;
+  organizerName: string;
+  image: string;
+  gallery: string[];
+  description: string;
+  pricingMode: "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+  /** Null when pricingMode is CONTACT_FOR_PRICE — never render a price that isn't bookable. */
+  startingPrice: number | null;
 }
 
 export interface Review {

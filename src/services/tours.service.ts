@@ -11,6 +11,7 @@ function toTour(t: TourSummary | TourDetail): Tour {
   const images = "images" in t ? t.images.map((i) => i.url) : t.image ? [t.image.url] : [];
   return {
     id: t.id,
+    slug: t.slug,
     title: t.title,
     category: t.category,
     destinationId: t.destination.id,
@@ -23,7 +24,8 @@ function toTour(t: TourSummary | TourDetail): Tour {
     reviewCount: t.rating.reviewCount,
     languages: t.languages,
     maxGroupSize: t.maxGroupSize,
-    startingPrice: Number(t.fromPricePerPerson.amount),
+    pricingMode: t.pricingMode,
+    startingPrice: t.fromPricePerPerson ? Number(t.fromPricePerPerson.amount) : null,
     overview: "overview" in t ? t.overview : "",
     highlights: "highlights" in t ? t.highlights : [],
     itinerary: "itinerary" in t ? t.itinerary.map((i) => ({ time: i.time, title: i.title, description: i.description })) : [],

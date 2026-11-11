@@ -1,7 +1,8 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Search } from "lucide-react";
 import { Car } from "@/data/types";
 import { carPriceCap, CarFilters, filterCars, paginate } from "@/lib/listing";

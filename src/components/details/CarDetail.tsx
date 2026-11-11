@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import { Briefcase, DoorOpen, Fuel, Gauge, ShieldCheck, Snowflake, Users, Wallet, Zap } from "lucide-react";
 import { Car } from "@/data/types";
@@ -16,21 +16,23 @@ import FavoriteButton from "@/components/ui/FavoriteButton";
 import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import EstimateCard from "@/components/booking/EstimateCard";
 import PriceDisplay from "@/components/ui/PriceDisplay";
+import ContactForPriceCta from "@/components/product/ContactForPriceCta";
 
 const YOUNG_DRIVER_FEE_EGP = 150;
 
-export default function CarDetail({ car, locations }: { car: Car; locations: LocationRef[] }) {
+export default function CarDetail({ car, locations, whatsappNumber }: { car: Car; locations: LocationRef[]; whatsappNumber: string | null }) {
   const router = useRouter();
   const [pickupDate, setPickupDate] = useState(() => businessToday());
   const [dropoffDate, setDropoffDate] = useState(() => addDays(businessToday(), 3));
   const [pickupTime, setPickupTime] = useState("10:00");
   const [pickupLocationId, setPickupLocationId] = useState(locations[0]?.id ?? "");
   const [driverAge, setDriverAge] = useState(30);
+  const bookable = car.pricingMode === "FIXED_PRICE" && car.pricePerDay !== null;
 
   const days = Math.max(1, nightsBetween(pickupDate, dropoffDate));
   const valid = dropoffDate > pickupDate && pickupLocationId !== "";
-  const estimateEGP = valid
-    ? car.pricePerDay * days + (driverAge < 25 ? YOUNG_DRIVER_FEE_EGP * days : 0)
+  const estimateEGP = valid && bookable
+    ? (car.pricePerDay as number) * days + (driverAge < 25 ? YOUNG_DRIVER_FEE_EGP * days : 0)
     : null;
 
   const book = () => {
@@ -122,7 +124,9 @@ export default function CarDetail({ car, locations }: { car: Car; locations: Loc
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-          {locations.length === 0 ? (
+          {!bookable ? (
+            <ContactForPriceCta productName={car.name} productType="car" productId={car.id} whatsappNumber={whatsappNumber} />
+          ) : locations.length === 0 ? (
             // No pick-up branches are configured for this car yet — show that plainly instead of a
             // booking form, price and action that can never actually complete.
             <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-600">

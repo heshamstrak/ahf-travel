@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { useApp } from "@/context/AppProvider";
 import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from "@/components/ui/SocialIcons";
 import type { Branding } from "@/services/branding.service";
 
@@ -11,29 +10,30 @@ const columns = [
   {
     titleKey: "footer.explore",
     links: [
-      { label: "Hotels", href: "/hotels" },
-      { label: "Tours", href: "/tours" },
-      { label: "Cars", href: "/cars" },
-      { label: "Transfers", href: "/transfers" },
-      { label: "Packages", href: "/packages" },
+      { labelKey: "footer.exploreLinks.hotels", href: "/hotels" },
+      { labelKey: "footer.exploreLinks.tours", href: "/tours" },
+      { labelKey: "footer.exploreLinks.cars", href: "/cars" },
+      { labelKey: "footer.exploreLinks.transfers", href: "/transfers" },
+      { labelKey: "footer.exploreLinks.packages", href: "/packages" },
+      { labelKey: "footer.exploreLinks.conferencesEvents", href: "/conferences-events" },
     ],
   },
   {
     titleKey: "footer.company",
     links: [
-      { label: "About Us", href: "/about" },
-      { label: "Contact", href: "/contact" },
-      { label: "Careers", href: "/careers" },
+      { labelKey: "footer.companyLinks.about", href: "/about" },
+      { labelKey: "footer.companyLinks.contact", href: "/contact" },
+      { labelKey: "footer.companyLinks.careers", href: "/careers" },
     ],
   },
   {
     titleKey: "footer.support",
     links: [
-      { label: "Help Center", href: "/help" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Cancellation Policy", href: "/cancellation-policy" },
-      { label: "Terms & Conditions", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
+      { labelKey: "footer.supportLinks.help", href: "/help" },
+      { labelKey: "footer.supportLinks.faq", href: "/faq" },
+      { labelKey: "footer.supportLinks.cancellationPolicy", href: "/cancellation-policy" },
+      { labelKey: "footer.supportLinks.terms", href: "/terms" },
+      { labelKey: "footer.supportLinks.privacy", href: "/privacy" },
     ],
   },
 ];
@@ -48,7 +48,7 @@ const socials = [
 const paymentMethods = ["Visa", "Mastercard", "Meeza", "PayPal"];
 
 export default function Footer({ branding }: { branding?: Branding } = {}) {
-  const { t } = useApp();
+  const t = useTranslations();
   const pathname = usePathname();
 
   // The admin dashboard (Milestone 6) has its own layout and never shows the customer footer.
@@ -68,13 +68,11 @@ export default function Footer({ branding }: { branding?: Branding } = {}) {
             <Link href="/" className="font-display text-xl font-semibold text-white">
               {siteName}
             </Link>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-brand-200">
-              Your all-in-one platform for hotels, tours, car rentals and airport transfers across Egypt.
-            </p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-brand-200">{t("footer.tagline")}</p>
             <ul className="mt-6 space-y-3 text-sm text-brand-200">
               <li className="flex items-center gap-3">
                 <MapPin size={16} className="shrink-0 text-brand-300" />
-                <span>Nile Corniche, Cairo, Egypt</span>
+                <span>{t("footer.address")}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="shrink-0 text-brand-300" />
@@ -98,7 +96,7 @@ export default function Footer({ branding }: { branding?: Branding } = {}) {
                 {column.links.map((link) => (
                   <li key={link.href}>
                     <Link href={link.href} className="text-sm text-brand-200 transition-colors hover:text-white">
-                      {link.label}
+                      {t(link.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -132,7 +130,9 @@ export default function Footer({ branding }: { branding?: Branding } = {}) {
           </ul>
         </div>
 
-        <p className="mt-8 text-xs text-brand-300">{branding?.identity.footerCopyright || `© ${new Date().getFullYear()} ${siteName}. All rights reserved.`}</p>
+        <p className="mt-8 text-xs text-brand-300">
+          {branding?.identity.footerCopyright || `© ${new Date().getFullYear()} ${siteName}. ${t("footer.rightsReserved")}`}
+        </p>
       </div>
     </footer>
   );

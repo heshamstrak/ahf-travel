@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Ban, CalendarX2, RotateCcw } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions, { RowAction } from "@/components/admin/RowActions";
 
 interface TourOption {
   id: string;
@@ -119,37 +121,40 @@ export default function AdminTourSessionsIndexPage() {
     { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} /> },
     {
       key: "actions",
-      header: "Actions",
-      render: (r) => (
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <input
-            type="number"
-            min={0}
-            defaultValue={r.capacity}
-            onBlur={(e) => {
-              const next = Number(e.target.value);
-              if (next !== r.capacity) void setCapacity(r, next);
-            }}
-            className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
-            title="Edit capacity"
-          />
-          {r.status === "OPEN" && (
-            <button onClick={() => setStatus(r, "CLOSED")} className="text-xs font-medium text-slate-500 hover:underline">
-              Close
-            </button>
-          )}
-          {r.status === "CLOSED" && (
-            <button onClick={() => setStatus(r, "OPEN")} className="text-xs font-medium text-brand-700 hover:underline">
-              Reopen
-            </button>
-          )}
-          {r.status !== "CANCELLED" && r.bookedUnits === 0 && (
-            <button onClick={() => setStatus(r, "CANCELLED")} className="text-xs font-medium text-red-600 hover:underline">
-              Cancel
-            </button>
-          )}
-        </div>
-      ),
+      header: "",
+      className: "text-right",
+      render: (r) => {
+        const actions: RowAction[] = [
+          { key: "close", label: "Close", icon: CalendarX2, hidden: r.status !== "OPEN", onClick: () => setStatus(r, "CLOSED") },
+          { key: "reopen", label: "Reopen", icon: RotateCcw, hidden: r.status !== "CLOSED", onClick: () => setStatus(r, "OPEN") },
+          {
+            key: "cancel",
+            label: "Cancel session",
+            icon: Ban,
+            tone: "danger",
+            hidden: r.status === "CANCELLED" || r.bookedUnits > 0,
+            confirmTitle: "Cancel this session?",
+            confirmMessage: "Travellers will no longer be able to book this departure. Only possible while no one has booked it yet.",
+            onClick: () => setStatus(r, "CANCELLED"),
+          },
+        ];
+        return (
+          <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+            <input
+              type="number"
+              min={0}
+              defaultValue={r.capacity}
+              onBlur={(e) => {
+                const next = Number(e.target.value);
+                if (next !== r.capacity) void setCapacity(r, next);
+              }}
+              className="w-16 rounded-md border border-slate-300 px-2 py-1 text-xs"
+              title="Edit capacity"
+            />
+            <RowActions actions={actions} />
+          </div>
+        );
+      },
     },
   ];
 

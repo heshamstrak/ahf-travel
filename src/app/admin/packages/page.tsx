@@ -6,6 +6,9 @@ import { adminApi, ApiError, mediaUrl } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn, Thumbnail } from "@/components/admin/DataTable";
+import RowActions from "@/components/admin/RowActions";
+import { catalogRowActions } from "@/components/admin/catalogActions";
+import { useAdminI18n } from "@/lib/admin/i18n";
 
 interface Destination {
   id: string;
@@ -15,6 +18,8 @@ interface Policy {
   id: string;
   name: string;
 }
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface Pkg {
   id: string;
   slug: string;
@@ -25,6 +30,7 @@ interface Pkg {
   durationNights: number;
   basePrice: string;
   currency: string;
+  pricingMode: PricingMode;
   destinations: { id: string; name: string }[];
   upcomingDepartureCount: number;
   cover: { url: string } | null;
@@ -40,6 +46,7 @@ const emptyForm = {
   pricingBasis: "PER_PERSON",
   currency: "EGP",
   basePrice: 3000,
+  pricingMode: "FIXED_PRICE" as PricingMode,
   maxTravellers: 6,
   cancellationPolicyId: "",
   destinationId: "",
@@ -47,6 +54,7 @@ const emptyForm = {
 
 export default function AdminPackagesPage() {
   const { notify } = useAdminToast();
+  const { t } = useAdminI18n();
   const router = useRouter();
   const [items, setItems] = useState<Pkg[] | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
@@ -112,24 +120,28 @@ export default function AdminPackagesPage() {
     { key: "title", header: "Package", sortValue: (p) => p.title, render: (p) => <span className="font-medium text-slate-800">{p.title}</span> },
     { key: "destination", header: "Destination", sortValue: (p) => p.destinations[0]?.name ?? "", render: (p) => p.destinations.map((d) => d.name).join(", ") },
     { key: "duration", header: "Duration", sortValue: (p) => p.durationDays, render: (p) => `${p.durationDays}d / ${p.durationNights}n` },
-    { key: "price", header: "Starting price", sortValue: (p) => Number(p.basePrice), render: (p) => `${p.basePrice} ${p.currency}` },
+    {
+      key: "price",
+      header: "Starting price",
+      sortValue: (p) => (p.pricingMode === "FIXED_PRICE" ? Number(p.basePrice) : -1),
+      render: (p) => (p.pricingMode === "FIXED_PRICE" ? `${p.basePrice} ${p.currency}` : "Contact for price"),
+    },
     { key: "departures", header: "Departures", sortValue: (p) => p.upcomingDepartureCount, render: (p) => p.upcomingDepartureCount },
     { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
     {
       key: "actions",
-      header: "Actions",
+      header: "",
+      className: "text-right",
       render: (p) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {p.status !== "PUBLISHED" ? (
-            <button onClick={() => setStatus(p.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-              Publish
-            </button>
-          ) : (
-            <button onClick={() => setStatus(p.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-              Unpublish
-            </button>
-          )}
-        </div>
+        <RowActions
+          actions={catalogRowActions({
+            status: p.status,
+            entityLabel: "package",
+            detailHref: () => router.push(`/admin/packages/${p.id}`),
+            onSetStatus: (status) => setStatus(p.id, status),
+            t,
+          })}
+        />
       ),
     },
   ];
@@ -141,8 +153,8 @@ export default function AdminPackagesPage() {
       {showForm && (
         <Card className="mb-6 p-5">
           <form onSubmit={create} className="grid gap-4 sm:grid-cols-2">
-            <Field label="Slug">
-              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} />
+            <Field label="Slug" hint="Lowercase letters, numbers and hyphens only">
+              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} placeholder="classic-egypt" />
             </Field>
             <Field label="Title">
               <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} />
@@ -187,7 +199,13 @@ export default function AdminPackagesPage() {
             <Field label="Days">
               <input type="number" min={1} value={form.durationDays} onChange={(e) => setForm({ ...form, durationDays: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Base price (EGP)">
+            <Field label="Pricing mode">
+              <select value={form.pricingMode} onChange={(e) => setForm({ ...form, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Base price (EGP)" hint="Only applies when pricing mode is Fixed price">
               <input type="number" min={0} value={form.basePrice} onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Max travellers">

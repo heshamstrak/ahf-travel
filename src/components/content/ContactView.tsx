@@ -1,9 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { FormEvent, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { email, hasErrors, required, Errors } from "@/lib/validation";
+import { submitInquiry, SubmitInquiryInput } from "@/services/inquiries.service";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Button from "@/components/ui/Button";
@@ -15,12 +18,45 @@ interface ContactValues {
   message: string;
 }
 
+const SUBJECT_OPTIONS = [
+  { value: "booking", label: "Help with a booking" },
+  { value: "pre-sale", label: "Question before booking" },
+  { value: "payment", label: "Payment or invoice" },
+  { value: "partner", label: "Partnership enquiry" },
+  { value: "other", label: "Something else" },
+];
+
+/** The `?productType=` query param is written lowercase by ContactForPriceCta (e.g. "car",
+ *  "conference_event"), but the backend's Inquiry DTO validates against its Prisma enum members,
+ *  which are uppercase. An unrecognized value degrades to `undefined` rather than being sent
+ *  through and rejected — the product link is a nice-to-have, not something that should block the
+ *  message itself. */
+const PRODUCT_TYPE_MAP: Record<string, SubmitInquiryInput["productType"]> = {
+  hotel: "HOTEL",
+  tour: "TOUR",
+  car: "CAR",
+  transfer: "TRANSFER",
+  package: "PACKAGE",
+  conference_event: "CONFERENCE_EVENT",
+};
+
+function normalizeProductType(raw: string | null): SubmitInquiryInput["productType"] | undefined {
+  return raw ? PRODUCT_TYPE_MAP[raw.toLowerCase()] : undefined;
+}
+
 export default function ContactView() {
+  const searchParams = useSearchParams();
+  const locale = useLocale();
+  const productType = normalizeProductType(searchParams.get("productType"));
+  const productId = searchParams.get("productId");
+
   const [values, setValues] = useState<ContactValues>({ name: "", email: "", subject: "booking", message: "" });
   const [errors, setErrors] = useState<Errors<ContactValues>>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const next: Errors<ContactValues> = {
       name: required(values.name, "Please enter your name"),
@@ -28,7 +64,27 @@ export default function ContactView() {
       message: values.message.trim().length < 10 ? "Message should be at least 10 characters" : undefined,
     };
     setErrors(next);
-    if (!hasErrors(next)) setSent(true);
+    if (hasErrors(next)) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+    const subjectLabel = SUBJECT_OPTIONS.find((o) => o.value === values.subject)?.label;
+    try {
+      await submitInquiry({
+        name: values.name,
+        email: values.email,
+        message: subjectLabel ? `[${subjectLabel}] ${values.message}` : values.message,
+        locale: locale === "ar" ? "ar" : "en",
+        source: productType && productId ? "product_detail" : "contact_form",
+        ...(productType ? { productType } : {}),
+        ...(productId ? { productId } : {}),
+      });
+      setSent(true);
+    } catch {
+      setSubmitError("Something went wrong sending your message. Please try again, or email us directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -52,13 +108,7 @@ export default function ContactView() {
               label="Topic"
               value={values.subject}
               onChange={(e) => setValues({ ...values, subject: e.target.value })}
-              options={[
-                { value: "booking", label: "Help with a booking" },
-                { value: "pre-sale", label: "Question before booking" },
-                { value: "payment", label: "Payment or invoice" },
-                { value: "partner", label: "Partnership enquiry" },
-                { value: "other", label: "Something else" },
-              ]}
+              options={SUBJECT_OPTIONS}
             />
             <div>
               <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-slate-700">
@@ -76,8 +126,13 @@ export default function ContactView() {
               />
               {errors.message ? <p className="mt-1.5 text-xs text-red-600">{errors.message}</p> : null}
             </div>
-            <Button type="submit" size="lg">
-              Send message
+            {submitError ? (
+              <p role="alert" className="text-sm text-red-600">
+                {submitError}
+              </p>
+            ) : null}
+            <Button type="submit" size="lg" disabled={submitting}>
+              {submitting ? "Sending…" : "Send message"}
             </Button>
           </form>
         )}

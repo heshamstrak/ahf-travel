@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BadgeCheck, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { adminApi, ApiError } from "@/lib/admin/api";
 import { useAdminToast } from "@/lib/admin/toast";
-import { Card, ConfirmButton, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
+import { Card, ErrorState, Field, inputClass, PageHeader, PrimaryButton, StatusBadge } from "@/components/admin/ui";
 import DataTable, { DataTableColumn } from "@/components/admin/DataTable";
+import RowActions, { RowAction } from "@/components/admin/RowActions";
 
 interface Destination {
   id: string;
@@ -113,43 +115,46 @@ export default function AdminLocationsPage() {
     { key: "status", header: "Status", render: (l) => <StatusBadge status={l.status} /> },
     {
       key: "actions",
-      header: "Actions",
-      render: (l) => (
-        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-          {editing === l.id ? (
-            <>
+      header: "",
+      className: "text-right",
+      render: (l) => {
+        if (editing === l.id) {
+          return (
+            <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => saveEdit(l.id)} className="text-xs font-medium text-brand-700 hover:underline">
                 Save
               </button>
               <button onClick={() => setEditing(null)} className="text-xs font-medium text-slate-500 hover:underline">
                 Cancel
               </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => {
-                  setEditing(l.id);
-                  setEditName(l.name);
-                }}
-                className="text-xs font-medium text-slate-500 hover:underline"
-              >
-                Edit
-              </button>
-              {l.status !== "PUBLISHED" ? (
-                <button onClick={() => setStatus(l.id, "PUBLISHED")} className="text-xs font-medium text-brand-700 hover:underline">
-                  Publish
-                </button>
-              ) : (
-                <button onClick={() => setStatus(l.id, "DRAFT")} className="text-xs font-medium text-slate-500 hover:underline">
-                  Unpublish
-                </button>
-              )}
-              <ConfirmButton label="Delete" confirmLabel="Delete this location?" onConfirm={() => remove(l.id)} className="text-xs font-medium text-red-600 hover:underline" />
-            </>
-          )}
-        </div>
-      ),
+            </div>
+          );
+        }
+        const actions: RowAction[] = [
+          {
+            key: "edit",
+            label: "Edit",
+            icon: Pencil,
+            onClick: () => {
+              setEditing(l.id);
+              setEditName(l.name);
+            },
+          },
+          l.status !== "PUBLISHED"
+            ? { key: "publish", label: "Publish", icon: BadgeCheck, onClick: () => setStatus(l.id, "PUBLISHED") }
+            : { key: "unpublish", label: "Unpublish", icon: EyeOff, onClick: () => setStatus(l.id, "DRAFT") },
+          {
+            key: "delete",
+            label: "Delete",
+            icon: Trash2,
+            tone: "danger",
+            confirmTitle: "Delete this location?",
+            confirmMessage: "This permanently removes it. Locations already referenced by a car or transfer rate cannot be deleted.",
+            onClick: () => remove(l.id),
+          },
+        ];
+        return <RowActions actions={actions} />;
+      },
     },
   ];
 

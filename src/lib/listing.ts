@@ -72,17 +72,20 @@ export function filterTours(items: Tour[], f: TourFilters): Tour[] {
       f.durations.some((d) =>
         d === "short" ? t.durationHours <= 3 : d === "half" ? t.durationHours > 3 && t.durationHours <= 6 : t.durationHours > 6
       );
+    // CONTACT_FOR_PRICE items have no price to compare against a price slider — a filter the
+    // visitor set along a dimension that simply doesn't apply to them must never hide them.
+    const priceOk = t.startingPrice === null || t.startingPrice <= f.maxPrice;
     return (
       (!f.destinationId || t.destinationId === f.destinationId) &&
       (f.categories.length === 0 || f.categories.includes(t.category)) &&
-      t.startingPrice <= f.maxPrice &&
+      priceOk &&
       durationOk &&
       t.rating >= f.minRating
     );
   });
   return sortBy(result, f.sort, {
-    "price-asc": (t) => t.startingPrice,
-    "price-desc": (t) => -t.startingPrice,
+    "price-asc": (t) => t.startingPrice ?? Infinity,
+    "price-desc": (t) => -(t.startingPrice ?? Infinity),
     rating: (t) => -t.rating,
   });
 }
@@ -91,7 +94,7 @@ export function filterCars(items: Car[], f: CarFilters): Car[] {
   const result = items.filter(
     (c) =>
       (f.categories.length === 0 || f.categories.includes(c.category)) &&
-      c.pricePerDay <= f.maxPrice &&
+      (c.pricePerDay === null || c.pricePerDay <= f.maxPrice) &&
       (f.transmission === "any" || c.transmission === f.transmission) &&
       c.passengers >= f.minPassengers &&
       c.bags >= f.minBags &&
@@ -99,8 +102,8 @@ export function filterCars(items: Car[], f: CarFilters): Car[] {
       (f.brands.length === 0 || f.brands.includes(c.brand))
   );
   return sortBy(result, f.sort, {
-    "price-asc": (c) => c.pricePerDay,
-    "price-desc": (c) => -c.pricePerDay,
+    "price-asc": (c) => c.pricePerDay ?? Infinity,
+    "price-desc": (c) => -(c.pricePerDay ?? Infinity),
   });
 }
 
@@ -118,8 +121,8 @@ export function filterPackages(items: TravelPackage[], f: PackageFilters): Trave
     );
   });
   return sortBy(result, f.sort, {
-    "price-asc": (p) => p.startingPrice,
-    "price-desc": (p) => -p.startingPrice,
+    "price-asc": (p) => p.startingPrice ?? Infinity,
+    "price-desc": (p) => -(p.startingPrice ?? Infinity),
   });
 }
 

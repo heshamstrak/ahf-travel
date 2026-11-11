@@ -1,15 +1,17 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { Briefcase, DoorOpen, Snowflake, Users, Zap } from "lucide-react";
 import { Car } from "@/data/types";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 
 export default function CarCard({ car, days }: { car: Car; days?: number }) {
+  const t = useTranslations();
   return (
     <article className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
       <div className="relative aspect-[4/3] overflow-hidden bg-sand-50">
-        <Link href={`/cars/${car.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
+        <Link href={`/cars/${car.slug || car.id}`} className="block h-full w-full" tabIndex={-1} aria-hidden>
           <Image
             src={car.image}
             alt=""
@@ -26,7 +28,7 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
 
       <div className="flex flex-1 flex-col p-4">
         <h3 className="line-clamp-2 font-display text-lg font-medium text-slate-900">
-          <Link href={`/cars/${car.id}`} className="hover:text-brand-700">
+          <Link href={`/cars/${car.slug || car.id}`} className="hover:text-brand-700">
             {car.name}
           </Link>
         </h3>
@@ -35,15 +37,15 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
         <ul className="mt-3 grid grid-cols-2 gap-y-2 text-sm text-slate-600">
           <li className="flex items-center gap-1.5">
             <Users size={14} />
-            {car.passengers} seats
+            {car.passengers} {t("card.seats")}
           </li>
           <li className="flex items-center gap-1.5">
             <Briefcase size={14} />
-            {car.bags} bags
+            {car.bags} {t("card.bags")}
           </li>
           <li className="flex items-center gap-1.5">
             <DoorOpen size={14} />
-            {car.doors} doors
+            {car.doors} {t("card.doors")}
           </li>
           <li className="flex items-center gap-1.5">
             <Zap size={14} />
@@ -52,26 +54,32 @@ export default function CarCard({ car, days }: { car: Car; days?: number }) {
           {car.airConditioning ? (
             <li className="flex items-center gap-1.5">
               <Snowflake size={14} />
-              A/C
+              {t("card.ac")}
             </li>
           ) : null}
         </ul>
 
         <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
           <div>
-            <p className="text-xs text-slate-500">per day</p>
-            <PriceDisplay amountEGP={car.pricePerDay} className="font-display text-lg font-semibold text-slate-900" />
-            {days ? (
-              <p className="mt-0.5 text-xs text-slate-500">
-                Total for {days} day{days > 1 ? "s" : ""}: <PriceDisplay amountEGP={car.pricePerDay * days} className="font-semibold text-slate-700" />
-              </p>
-            ) : null}
+            {car.pricingMode === "FIXED_PRICE" && car.pricePerDay !== null ? (
+              <>
+                <p className="text-xs text-slate-500">{t("card.perDay")}</p>
+                <PriceDisplay amountEGP={car.pricePerDay} className="font-display text-lg font-semibold text-slate-900" />
+                {days ? (
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    {t("card.totalForDays", { days })} <PriceDisplay amountEGP={car.pricePerDay * days} className="font-semibold text-slate-700" />
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <p className="font-display text-sm font-medium text-slate-500">{t("card.priceOnRequest")}</p>
+            )}
           </div>
           <Link
-            href={`/cars/${car.id}`}
+            href={`/cars/${car.slug || car.id}`}
             className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-50"
           >
-            View Details
+            {t("common.viewDetails")}
           </Link>
         </div>
       </div>

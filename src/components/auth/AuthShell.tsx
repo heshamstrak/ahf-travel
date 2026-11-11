@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 export default function AuthShell({ title, subtitle, children, footer }: { title: string; subtitle: string; children: ReactNode; footer: ReactNode }) {
   return (

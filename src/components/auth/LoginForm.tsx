@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useApp } from "@/context/AppProvider";
 import { ApiError } from "@/lib/api/client";
 import { email, minLength, hasErrors, Errors } from "@/lib/validation";

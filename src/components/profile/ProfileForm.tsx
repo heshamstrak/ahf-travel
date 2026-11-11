@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useApp } from "@/context/AppProvider";
 import { api, ApiError } from "@/lib/api/client";
 import type { PublicUser } from "@/lib/api/types";
@@ -19,7 +21,10 @@ interface PersonalValues {
 }
 
 export default function ProfileForm({ user: initialUser }: { user: PublicUser }) {
-  const { setCurrency, setLanguage, currency, language, refreshUser } = useApp();
+  const { setCurrency, currency, refreshUser } = useApp();
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const [user, setUser] = useState(initialUser);
   const [personal, setPersonal] = useState<PersonalValues>({
     firstName: user.firstName,
@@ -157,8 +162,8 @@ export default function ProfileForm({ user: initialUser }: { user: PublicUser })
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Select
               label="Language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as "en" | "ar")}
+              value={locale}
+              onChange={(e) => router.replace(pathname, { locale: e.target.value as "en" | "ar" })}
               options={[
                 { value: "en", label: "English" },
                 { value: "ar", label: "العربية (Arabic)" },
