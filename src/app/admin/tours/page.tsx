@@ -18,6 +18,8 @@ interface Policy {
   id: string;
   name: string;
 }
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface Tour {
   id: string;
   slug: string;
@@ -27,6 +29,7 @@ interface Tour {
   durationMinutes: number;
   pricePerPerson: string;
   currency: string;
+  pricingMode: PricingMode;
   destinationName: string;
   upcomingSessionCount: number;
   cover: { url: string } | null;
@@ -42,6 +45,7 @@ const emptyForm = {
   maxGroupSize: 15,
   currency: "EGP",
   pricePerPerson: 500,
+  pricingMode: "FIXED_PRICE" as PricingMode,
   overview: "",
   cancellationPolicyId: "",
 };
@@ -110,7 +114,12 @@ export default function AdminToursPage() {
     { key: "title", header: "Tour", sortValue: (t) => t.title, render: (t) => <span className="font-medium text-slate-800">{t.title}</span> },
     { key: "destination", header: "Destination", sortValue: (t) => t.destinationName, render: (t) => t.destinationName },
     { key: "duration", header: "Duration", sortValue: (t) => t.durationMinutes, render: (t) => `${Math.round(t.durationMinutes / 60)}h` },
-    { key: "price", header: "Starting price", sortValue: (t) => Number(t.pricePerPerson), render: (t) => `${t.pricePerPerson} ${t.currency}` },
+    {
+      key: "price",
+      header: "Starting price",
+      sortValue: (t) => (t.pricingMode === "FIXED_PRICE" ? Number(t.pricePerPerson) : -1),
+      render: (t) => (t.pricingMode === "FIXED_PRICE" ? `${t.pricePerPerson} ${t.currency}` : "Contact for price"),
+    },
     { key: "sessions", header: "Upcoming sessions", sortValue: (t) => t.upcomingSessionCount, render: (t) => t.upcomingSessionCount },
     { key: "status", header: "Status", render: (t) => <StatusBadge status={t.status} /> },
     {
@@ -138,8 +147,8 @@ export default function AdminToursPage() {
       {showForm && (
         <Card className="mb-6 p-5">
           <form onSubmit={create} className="grid gap-4 sm:grid-cols-2">
-            <Field label="Slug">
-              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} />
+            <Field label="Slug" hint="Lowercase letters, numbers and hyphens only">
+              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} placeholder="pyramids-sunset-tour" />
             </Field>
             <Field label="Title">
               <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} />
@@ -180,7 +189,13 @@ export default function AdminToursPage() {
             <Field label="Max group size">
               <input type="number" min={1} value={form.maxGroupSize} onChange={(e) => setForm({ ...form, maxGroupSize: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Price per person (EGP)">
+            <Field label="Pricing">
+              <select value={form.pricingMode} onChange={(e) => setForm({ ...form, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Price per person (EGP)" hint="Only applies when pricing is Fixed price">
               <input type="number" min={0} value={form.pricePerPerson} onChange={(e) => setForm({ ...form, pricePerPerson: Number(e.target.value) })} className={inputClass} />
             </Field>
             <div className="sm:col-span-2">

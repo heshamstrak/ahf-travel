@@ -26,10 +26,28 @@ const SUBJECT_OPTIONS = [
   { value: "other", label: "Something else" },
 ];
 
+/** The `?productType=` query param is written lowercase by ContactForPriceCta (e.g. "car",
+ *  "conference_event"), but the backend's Inquiry DTO validates against its Prisma enum members,
+ *  which are uppercase. An unrecognized value degrades to `undefined` rather than being sent
+ *  through and rejected — the product link is a nice-to-have, not something that should block the
+ *  message itself. */
+const PRODUCT_TYPE_MAP: Record<string, SubmitInquiryInput["productType"]> = {
+  hotel: "HOTEL",
+  tour: "TOUR",
+  car: "CAR",
+  transfer: "TRANSFER",
+  package: "PACKAGE",
+  conference_event: "CONFERENCE_EVENT",
+};
+
+function normalizeProductType(raw: string | null): SubmitInquiryInput["productType"] | undefined {
+  return raw ? PRODUCT_TYPE_MAP[raw.toLowerCase()] : undefined;
+}
+
 export default function ContactView() {
   const searchParams = useSearchParams();
   const locale = useLocale();
-  const productType = searchParams.get("productType") as SubmitInquiryInput["productType"] | null;
+  const productType = normalizeProductType(searchParams.get("productType"));
   const productId = searchParams.get("productId");
 
   const [values, setValues] = useState<ContactValues>({ name: "", email: "", subject: "booking", message: "" });

@@ -18,6 +18,8 @@ interface Policy {
   id: string;
   name: string;
 }
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface Pkg {
   id: string;
   slug: string;
@@ -28,6 +30,7 @@ interface Pkg {
   durationNights: number;
   basePrice: string;
   currency: string;
+  pricingMode: PricingMode;
   destinations: { id: string; name: string }[];
   upcomingDepartureCount: number;
   cover: { url: string } | null;
@@ -43,6 +46,7 @@ const emptyForm = {
   pricingBasis: "PER_PERSON",
   currency: "EGP",
   basePrice: 3000,
+  pricingMode: "FIXED_PRICE" as PricingMode,
   maxTravellers: 6,
   cancellationPolicyId: "",
   destinationId: "",
@@ -116,7 +120,12 @@ export default function AdminPackagesPage() {
     { key: "title", header: "Package", sortValue: (p) => p.title, render: (p) => <span className="font-medium text-slate-800">{p.title}</span> },
     { key: "destination", header: "Destination", sortValue: (p) => p.destinations[0]?.name ?? "", render: (p) => p.destinations.map((d) => d.name).join(", ") },
     { key: "duration", header: "Duration", sortValue: (p) => p.durationDays, render: (p) => `${p.durationDays}d / ${p.durationNights}n` },
-    { key: "price", header: "Starting price", sortValue: (p) => Number(p.basePrice), render: (p) => `${p.basePrice} ${p.currency}` },
+    {
+      key: "price",
+      header: "Starting price",
+      sortValue: (p) => (p.pricingMode === "FIXED_PRICE" ? Number(p.basePrice) : -1),
+      render: (p) => (p.pricingMode === "FIXED_PRICE" ? `${p.basePrice} ${p.currency}` : "Contact for price"),
+    },
     { key: "departures", header: "Departures", sortValue: (p) => p.upcomingDepartureCount, render: (p) => p.upcomingDepartureCount },
     { key: "status", header: "Status", render: (p) => <StatusBadge status={p.status} /> },
     {
@@ -144,8 +153,8 @@ export default function AdminPackagesPage() {
       {showForm && (
         <Card className="mb-6 p-5">
           <form onSubmit={create} className="grid gap-4 sm:grid-cols-2">
-            <Field label="Slug">
-              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} />
+            <Field label="Slug" hint="Lowercase letters, numbers and hyphens only">
+              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} placeholder="classic-egypt" />
             </Field>
             <Field label="Title">
               <input required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} />
@@ -190,7 +199,13 @@ export default function AdminPackagesPage() {
             <Field label="Days">
               <input type="number" min={1} value={form.durationDays} onChange={(e) => setForm({ ...form, durationDays: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Base price (EGP)">
+            <Field label="Pricing mode">
+              <select value={form.pricingMode} onChange={(e) => setForm({ ...form, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Base price (EGP)" hint="Only applies when pricing mode is Fixed price">
               <input type="number" min={0} value={form.basePrice} onChange={(e) => setForm({ ...form, basePrice: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Max travellers">

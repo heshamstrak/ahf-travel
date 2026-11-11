@@ -14,6 +14,8 @@ interface Policy {
   id: string;
   name: string;
 }
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface CarModel {
   id: string;
   slug: string;
@@ -25,6 +27,7 @@ interface CarModel {
   passengers: number;
   pricePerDay: string;
   currency: string;
+  pricingMode: PricingMode;
   cover: { url: string } | null;
 }
 
@@ -42,6 +45,7 @@ const emptyForm = {
   currency: "EGP",
   pricePerDay: 500,
   depositAmount: 1000,
+  pricingMode: "FIXED_PRICE" as PricingMode,
   cancellationPolicyId: "",
 };
 
@@ -111,7 +115,12 @@ export default function AdminCarsPage() {
     { key: "category", header: "Category", sortValue: (c) => c.category, render: (c) => c.category },
     { key: "transmission", header: "Transmission", sortValue: (c) => c.transmission, render: (c) => c.transmission },
     { key: "passengers", header: "Passengers", sortValue: (c) => c.passengers, render: (c) => c.passengers },
-    { key: "price", header: "Starting price", sortValue: (c) => Number(c.pricePerDay), render: (c) => `${c.pricePerDay} ${c.currency}/day` },
+    {
+      key: "price",
+      header: "Starting price",
+      sortValue: (c) => (c.pricingMode === "FIXED_PRICE" ? Number(c.pricePerDay) : -1),
+      render: (c) => (c.pricingMode === "FIXED_PRICE" ? `${c.pricePerDay} ${c.currency}/day` : "Contact for price"),
+    },
     { key: "status", header: "Status", render: (c) => <StatusBadge status={c.status} /> },
     {
       key: "actions",
@@ -138,8 +147,8 @@ export default function AdminCarsPage() {
       {showForm && (
         <Card className="mb-6 p-5">
           <form onSubmit={create} className="grid gap-4 sm:grid-cols-3">
-            <Field label="Slug">
-              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} />
+            <Field label="Slug" hint="Lowercase letters, numbers and hyphens only, e.g. mercedes-amg">
+              <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} placeholder="mercedes-amg" />
             </Field>
             <Field label="Brand">
               <input required value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className={inputClass} />
@@ -186,7 +195,13 @@ export default function AdminCarsPage() {
             <Field label="Min driver age">
               <input type="number" min={18} value={form.minDriverAge} onChange={(e) => setForm({ ...form, minDriverAge: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Price per day (EGP)">
+            <Field label="Pricing">
+              <select value={form.pricingMode} onChange={(e) => setForm({ ...form, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Price per day (EGP)" hint="Only applies when pricing is Fixed price">
               <input type="number" min={0} value={form.pricePerDay} onChange={(e) => setForm({ ...form, pricePerDay: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Deposit (EGP)">

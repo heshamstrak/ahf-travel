@@ -8,6 +8,8 @@ import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, LoadingState, PageHeader, PrimaryButton, SecondaryButton, StatusBadge, TagListInput } from "@/components/admin/ui";
 import ImageManager from "@/components/admin/ImageManager";
 
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface ItineraryDay {
   day: number;
   title: string;
@@ -23,6 +25,7 @@ interface Pkg {
   budgetTier: string;
   basePrice: string;
   currency: string;
+  pricingMode: PricingMode;
   singleSupplement: string | null;
   childPrice: string | null;
   extraPersonPrice: string | null;
@@ -60,6 +63,7 @@ interface PackagePatch {
   durationDays?: number;
   budgetTier?: string;
   basePrice?: number;
+  pricingMode?: PricingMode;
   singleSupplement?: number;
   childPrice?: number;
   extraPersonPrice?: number;
@@ -221,7 +225,7 @@ export default function AdminPackageDetailPage() {
     <div className="space-y-6">
       <PageHeader
         title={pkg.title}
-        description={`${pkg.durationDays}d/${pkg.durationNights}n · ${pkg.budgetTier} · ${pkg.basePrice} ${pkg.currency}`}
+        description={`${pkg.durationDays}d/${pkg.durationNights}n · ${pkg.budgetTier} · ${pkg.pricingMode === "FIXED_PRICE" ? `${pkg.basePrice} ${pkg.currency}` : "Contact for price"}`}
         action={
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={pkg.status} />
@@ -269,7 +273,13 @@ export default function AdminPackageDetailPage() {
             <Field label="Days">
               <input type="number" min={1} defaultValue={pkg.durationDays} onChange={(e) => setEditForm({ ...editForm, durationDays: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Base price (EGP)">
+            <Field label="Pricing mode">
+              <select defaultValue={pkg.pricingMode} onChange={(e) => setEditForm({ ...editForm, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Base price (EGP)" hint="Only applies when pricing mode is Fixed price">
               <input type="number" min={0} defaultValue={pkg.basePrice} onChange={(e) => setEditForm({ ...editForm, basePrice: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Min travellers">

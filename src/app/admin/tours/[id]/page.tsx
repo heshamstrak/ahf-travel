@@ -8,6 +8,8 @@ import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, LoadingState, PageHeader, PrimaryButton, SecondaryButton, StatusBadge, TagListInput } from "@/components/admin/ui";
 import ImageManager from "@/components/admin/ImageManager";
 
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface ItineraryStep {
   offsetMinutes: number;
   title: string;
@@ -24,6 +26,7 @@ interface Tour {
   languages: string[];
   pricePerPerson: string;
   currency: string;
+  pricingMode: PricingMode;
   overview: string;
   highlights: string[];
   included: string[];
@@ -55,6 +58,7 @@ interface TourPatch {
   maxGroupSize?: number;
   languages?: string[];
   pricePerPerson?: number;
+  pricingMode?: PricingMode;
   overview?: string;
   highlights?: string[];
   included?: string[];
@@ -201,7 +205,7 @@ export default function AdminTourDetailPage() {
     <div className="space-y-6">
       <PageHeader
         title={tour.title}
-        description={`${tour.category.replace(/_/g, " ")} · ${tour.pricePerPerson} ${tour.currency}/person`}
+        description={`${tour.category.replace(/_/g, " ")} · ${tour.pricingMode === "FIXED_PRICE" ? `${tour.pricePerPerson} ${tour.currency}/person` : "Contact for price"}`}
         action={
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={tour.status} />
@@ -245,7 +249,13 @@ export default function AdminTourDetailPage() {
             <Field label="Max group size">
               <input type="number" min={1} defaultValue={tour.maxGroupSize} onChange={(e) => setEditForm({ ...editForm, maxGroupSize: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Price per person (EGP)">
+            <Field label="Pricing">
+              <select defaultValue={tour.pricingMode} onChange={(e) => setEditForm({ ...editForm, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Price per person (EGP)" hint="Only applies when pricing is Fixed price">
               <input type="number" min={0} defaultValue={tour.pricePerPerson} onChange={(e) => setEditForm({ ...editForm, pricePerPerson: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Cancellation policy">

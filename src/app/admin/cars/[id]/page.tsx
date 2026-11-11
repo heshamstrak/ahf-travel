@@ -7,6 +7,8 @@ import { useAdminToast } from "@/lib/admin/toast";
 import { Card, ConfirmButton, ErrorState, Field, inputClass, LoadingState, PageHeader, PrimaryButton, SecondaryButton, StatusBadge, TagListInput } from "@/components/admin/ui";
 import ImageManager from "@/components/admin/ImageManager";
 
+type PricingMode = "FIXED_PRICE" | "CONTACT_FOR_PRICE";
+
 interface CarModel {
   id: string;
   slug: string;
@@ -25,6 +27,7 @@ interface CarModel {
   pricePerDay: string;
   depositAmount: string;
   currency: string;
+  pricingMode: PricingMode;
   coverage: string[];
   rentalConditions: string[];
   pickupNotes: string | null;
@@ -63,6 +66,7 @@ interface CarPatch {
   minDriverAge?: number;
   pricePerDay?: number;
   depositAmount?: number;
+  pricingMode?: PricingMode;
   coverage?: string[];
   rentalConditions?: string[];
   pickupNotes?: string;
@@ -239,7 +243,7 @@ export default function AdminCarDetailPage() {
     <div className="space-y-6">
       <PageHeader
         title={`${car.brand} ${car.name}`}
-        description={`${car.category} · ${car.transmission} · ${car.pricePerDay} ${car.currency}/day`}
+        description={`${car.category} · ${car.transmission} · ${car.pricingMode === "FIXED_PRICE" ? `${car.pricePerDay} ${car.currency}/day` : "Contact for price"}`}
         action={
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={car.status} />
@@ -316,7 +320,13 @@ export default function AdminCarDetailPage() {
             <Field label="Min driver age">
               <input type="number" min={18} defaultValue={car.minDriverAge} onChange={(e) => setEditForm({ ...editForm, minDriverAge: Number(e.target.value) })} className={inputClass} />
             </Field>
-            <Field label="Price per day (EGP)">
+            <Field label="Pricing">
+              <select defaultValue={car.pricingMode} onChange={(e) => setEditForm({ ...editForm, pricingMode: e.target.value as PricingMode })} className={inputClass}>
+                <option value="FIXED_PRICE">Fixed price</option>
+                <option value="CONTACT_FOR_PRICE">Contact for price</option>
+              </select>
+            </Field>
+            <Field label="Price per day (EGP)" hint="Only applies when pricing is Fixed price">
               <input type="number" min={0} defaultValue={car.pricePerDay} onChange={(e) => setEditForm({ ...editForm, pricePerDay: Number(e.target.value) })} className={inputClass} />
             </Field>
             <Field label="Deposit (EGP)">

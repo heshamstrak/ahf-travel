@@ -130,7 +130,7 @@ export default function AdminConferenceEventsPage() {
       {showForm && (
         <Card className="mb-6 p-5">
           <form onSubmit={create} className="grid gap-4 sm:grid-cols-2">
-            <Field label="Slug">
+            <Field label="Slug" hint="Lowercase letters, numbers and hyphens only">
               <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className={inputClass} placeholder="cairo-travel-summit-2026" />
             </Field>
             <Field label="Name">
