@@ -193,7 +193,7 @@ export default function TourDetail({ tour, whatsappNumber }: { tour: Tour; whats
 
           <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
             {!bookable ? (
-              <ContactForPriceCta productName={tour.title} productType="tour" productId={tour.id} whatsappNumber={whatsappNumber} />
+              <ContactForPriceCta productName={tour.title} productType="TOUR" productId={tour.id} whatsappNumber={whatsappNumber} />
             ) : loadingSessions ? (
               <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                 <h2 className="font-display text-lg font-medium text-slate-900">Select date & guests</h2>

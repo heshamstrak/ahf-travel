@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
-import { ArrowDownUp, Plane } from "lucide-react";
+import { ArrowDownUp, Plane, Send } from "lucide-react";
 import { TransferVehicle } from "@/data/types";
 import type { LocationRef, TransferRateView } from "@/lib/api/types";
 import { getTransferRates } from "@/services/transfers.service";
@@ -14,6 +14,7 @@ import Select from "@/components/ui/Select";
 import Stepper from "@/components/ui/Stepper";
 import DateInput from "@/components/ui/DateInput";
 import Input from "@/components/ui/Input";
+import RequestQuoteModal from "@/components/product/RequestQuoteModal";
 
 function toVehicle(rate: TransferRateView): TransferVehicle {
   return {
@@ -48,6 +49,7 @@ function TransfersForm({ locations }: { locations: LocationRef[] }) {
   const [luggage, setLuggage] = useState(2);
   const [rateId, setRateId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   const [rates, setRates] = useState<TransferRateView[]>([]);
   const [loadingRates, setLoadingRates] = useState(false);
@@ -224,6 +226,10 @@ function TransfersForm({ locations }: { locations: LocationRef[] }) {
             <Button className="w-full" onClick={proceed}>
               Continue to checkout
             </Button>
+            <Button type="button" onClick={() => setQuoteOpen(true)} variant="outline" className="mt-3 w-full">
+              <Send size={16} />
+              Request a Quote
+            </Button>
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center">
@@ -232,9 +238,21 @@ function TransfersForm({ locations }: { locations: LocationRef[] }) {
             <Button className="mt-5 w-full" variant="outline" onClick={proceed}>
               Continue to checkout
             </Button>
+            <Button type="button" onClick={() => setQuoteOpen(true)} variant="outline" className="mt-3 w-full">
+              <Send size={16} />
+              Request a Quote
+            </Button>
           </div>
         )}
       </aside>
+
+      <RequestQuoteModal
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        serviceType="TRANSFER"
+        serviceId={selectedRate?.id}
+        serviceLabel={selectedRate ? `${selectedRate.vehicleClass.name}: ${locationLabel(originId)} → ${locationLabel(destinationId)}` : undefined}
+      />
     </div>
   );
 }

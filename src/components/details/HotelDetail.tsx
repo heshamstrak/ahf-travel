@@ -3,7 +3,7 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import Image from "next/image";
 import { useState } from "react";
-import { BedDouble, Check, MapPin, Maximize2, Users } from "lucide-react";
+import { BedDouble, Check, MapPin, Maximize2, Send, Users } from "lucide-react";
 import { Hotel, Room } from "@/data/types";
 import { nightsBetween, addDays, businessToday } from "@/lib/dates";
 import { useApp } from "@/context/AppProvider";
@@ -14,6 +14,7 @@ import DateInput from "@/components/ui/DateInput";
 import FavoriteButton from "@/components/ui/FavoriteButton";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 import EstimateCard from "@/components/booking/EstimateCard";
+import RequestQuoteModal from "@/components/product/RequestQuoteModal";
 import { formatMoney } from "@/lib/currency";
 
 export default function HotelDetail({ hotel, rooms }: { hotel: Hotel; rooms: Room[] }) {
@@ -25,6 +26,7 @@ export default function HotelDetail({ hotel, rooms }: { hotel: Hotel; rooms: Roo
   const [roomCount, setRoomCount] = useState(1);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
 
   const nights = nightsBetween(checkIn, checkOut);
   const selectedRoom = rooms.find((r) => r.id === selectedRoomId) ?? null;
@@ -219,7 +221,11 @@ export default function HotelDetail({ hotel, rooms }: { hotel: Hotel; rooms: Roo
           // a booking form, price and action that can never actually complete.
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-600">
             <h2 className="font-display text-lg font-medium text-slate-900">Not yet available to book</h2>
-            <p className="mt-2">This property doesn&apos;t have any bookable rooms yet. Check back soon, or contact us for availability.</p>
+            <p className="mt-2">This property doesn&apos;t have any bookable rooms yet.</p>
+            <Button type="button" onClick={() => setQuoteOpen(true)} variant="outline" className="mt-4 w-full">
+              <Send size={16} />
+              Request a Quote
+            </Button>
           </div>
         ) : (
           <>
@@ -262,9 +268,21 @@ export default function HotelDetail({ hotel, rooms }: { hotel: Hotel; rooms: Roo
               Book Now
             </Button>
             <p className="text-center text-xs text-slate-500">You won&apos;t be charged yet. Choose Cash or InstaPay at checkout.</p>
+            <Button type="button" onClick={() => setQuoteOpen(true)} variant="outline" className="w-full">
+              <Send size={16} />
+              Request a Quote
+            </Button>
           </>
         )}
       </aside>
+
+      <RequestQuoteModal
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        serviceType="HOTEL"
+        serviceId={hotel.id}
+        serviceLabel={hotel.name}
+      />
     </div>
   );
 }
