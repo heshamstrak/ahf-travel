@@ -125,7 +125,7 @@ export default function CarDetail({ car, locations, whatsappNumber }: { car: Car
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
           {!bookable ? (
-            <ContactForPriceCta productName={car.name} productType="car" productId={car.id} whatsappNumber={whatsappNumber} />
+            <ContactForPriceCta productName={car.name} productType="CAR" productId={car.id} whatsappNumber={whatsappNumber} />
           ) : locations.length === 0 ? (
             // No pick-up branches are configured for this car yet — show that plainly instead of a
             // booking form, price and action that can never actually complete.

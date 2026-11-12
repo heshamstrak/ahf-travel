@@ -1,12 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import { MessageCircle, Send } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/Button";
+import RequestQuoteModal from "./RequestQuoteModal";
+import type { InquiryServiceType } from "@/services/inquiries.service";
 
 interface ContactForPriceCtaProps {
   productName: string;
-  /** "tour" | "hotel" | "car" | "package" | "conference_event" — passed through to the contact
-   *  page so the inquiry can be linked back to the product it was raised about. */
-  productType: string;
+  productType: InquiryServiceType;
   productId: string;
   whatsappNumber: string | null;
 }
@@ -16,9 +19,9 @@ interface ContactForPriceCtaProps {
  *  link and a Request a Quote action, matching the backend's hard rejection of a direct booking
  *  attempt on this product. */
 export default function ContactForPriceCta({ productName, productType, productId, whatsappNumber }: ContactForPriceCtaProps) {
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const message = `Hi! I'd like to ask about pricing for "${productName}".`;
   const waHref = whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/[^\d]/g, "")}?text=${encodeURIComponent(message)}` : null;
-  const contactHref = `/contact?productType=${encodeURIComponent(productType)}&productId=${encodeURIComponent(productId)}`;
 
   return (
     <div className="rounded-xl border border-slate-200 bg-sand-50 p-5">
@@ -36,7 +39,7 @@ export default function ContactForPriceCta({ productName, productType, productId
             WhatsApp Us
           </a>
         ) : null}
-        <Button href={contactHref} variant="outline" className="w-full sm:w-auto">
+        <Button type="button" onClick={() => setQuoteOpen(true)} variant="outline" className="w-full sm:w-auto">
           <Send size={16} />
           Request a Quote
         </Button>
@@ -44,6 +47,14 @@ export default function ContactForPriceCta({ productName, productType, productId
       <Link href="/contact" className="mt-3 inline-block text-xs text-slate-500 hover:text-brand-700 hover:underline">
         Or visit our Contact page
       </Link>
+
+      <RequestQuoteModal
+        open={quoteOpen}
+        onClose={() => setQuoteOpen(false)}
+        serviceType={productType}
+        serviceId={productId}
+        serviceLabel={productName}
+      />
     </div>
   );
 }

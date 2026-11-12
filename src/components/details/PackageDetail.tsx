@@ -160,7 +160,7 @@ export default function PackageDetail({ pkg, whatsappNumber }: { pkg: TravelPack
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
           {!bookable ? (
-            <ContactForPriceCta productName={pkg.title} productType="package" productId={pkg.id} whatsappNumber={whatsappNumber} />
+            <ContactForPriceCta productName={pkg.title} productType="PACKAGE" productId={pkg.id} whatsappNumber={whatsappNumber} />
           ) : loadingDepartures ? (
             <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
               <h2 className="font-display text-lg font-medium text-slate-900">Plan your trip</h2>

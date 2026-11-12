@@ -1,12 +1,17 @@
 import { api } from "@/lib/api/client";
 
+export type InquiryServiceType = "HOTEL" | "TOUR" | "CAR" | "TRANSFER" | "PACKAGE" | "CONFERENCE_EVENT";
+
 export interface SubmitInquiryInput {
   name: string;
-  email: string;
-  phone?: string;
-  message: string;
-  productType?: "HOTEL" | "TOUR" | "CAR" | "TRANSFER" | "PACKAGE" | "CONFERENCE_EVENT";
+  phone: string;
+  email?: string;
+  message?: string;
+  productType?: InquiryServiceType;
   productId?: string;
+  /** Free-form label→value context (dates, guest/passenger counts, route, …) — resolved service
+   *  details, never trusted data: the backend re-resolves the service from productId itself. */
+  details?: Record<string, string>;
   locale: "en" | "ar";
   source: "contact_form" | "product_detail";
 }

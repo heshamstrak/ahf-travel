@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { email, hasErrors, required, Errors } from "@/lib/validation";
+import { email, hasErrors, phone as phoneValidator, required, Errors } from "@/lib/validation";
 import { submitInquiry, SubmitInquiryInput } from "@/services/inquiries.service";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -13,6 +13,7 @@ import Button from "@/components/ui/Button";
 
 interface ContactValues {
   name: string;
+  phone: string;
   email: string;
   subject: string;
   message: string;
@@ -50,7 +51,7 @@ export default function ContactView() {
   const productType = normalizeProductType(searchParams.get("productType"));
   const productId = searchParams.get("productId");
 
-  const [values, setValues] = useState<ContactValues>({ name: "", email: "", subject: "booking", message: "" });
+  const [values, setValues] = useState<ContactValues>({ name: "", phone: "", email: "", subject: "booking", message: "" });
   const [errors, setErrors] = useState<Errors<ContactValues>>({});
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -60,6 +61,7 @@ export default function ContactView() {
     e.preventDefault();
     const next: Errors<ContactValues> = {
       name: required(values.name, "Please enter your name"),
+      phone: phoneValidator(values.phone),
       email: email(values.email),
       message: values.message.trim().length < 10 ? "Message should be at least 10 characters" : undefined,
     };
@@ -72,6 +74,7 @@ export default function ContactView() {
     try {
       await submitInquiry({
         name: values.name,
+        phone: values.phone,
         email: values.email,
         message: subjectLabel ? `[${subjectLabel}] ${values.message}` : values.message,
         locale: locale === "ar" ? "ar" : "en",
@@ -102,8 +105,9 @@ export default function ContactView() {
           <form onSubmit={submit} noValidate className="space-y-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input label="Full name" value={values.name} error={errors.name} onChange={(e) => setValues({ ...values, name: e.target.value })} />
-              <Input label="Email" type="email" value={values.email} error={errors.email} onChange={(e) => setValues({ ...values, email: e.target.value })} />
+              <Input label="Phone" type="tel" value={values.phone} error={errors.phone} onChange={(e) => setValues({ ...values, phone: e.target.value })} />
             </div>
+            <Input label="Email" type="email" value={values.email} error={errors.email} onChange={(e) => setValues({ ...values, email: e.target.value })} />
             <Select
               label="Topic"
               value={values.subject}
